@@ -76,3 +76,8 @@ It is the foundation of the entire system.
 ## 📎 License
 
 Open-core. System logic belongs to the Radiant Framework.
+
+
+DropFrame (Transformation): [https://github.com/dropframe-studio/dropframe](https://github.com/dropframe-studio/dropframe)
+
+Grindline (Production):[https://github.com/dropframe-studio/grindline-studio](https://github.com/dropframe-studio/grindline-studio)

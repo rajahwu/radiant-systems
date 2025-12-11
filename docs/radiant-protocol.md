@@ -1,0 +1,310 @@
+# Radiant Protocol — v0.1
+
+Radiant Protocol defines how the Radiant System communicates with its modules
+(e.g., DropFrame and Grindline) and how story / content operations are represented.
+
+The goal is to provide a **stable, modular, story-aware contract** so that:
+- Radiant can orchestrate work.
+- Modules can implement capabilities independently.
+- Human + AI collaboration has a clear “wire format”.
+
+Radiant Protocol v0.1 is deliberately minimal and extensible.
+
+---
+
+## 1. Core Concepts
+
+Radiant works with three core ideas:
+
+1. **Intent** — what the user wants to accomplish.
+2. **Transforms** — operations that reshape existing content.
+3. **Pipelines** — sequences of operations that produce output at scale.
+
+Modules (DropFrame, Grindline, future engines) implement parts of this protocol.
+
+---
+
+## 2. Message Envelope
+
+All Radiant messages use a shared envelope:
+
+```json
+{
+  "id": "uuid-or-unique-id",
+  "version": "radiant-protocol-v0.1",
+  "type": "INTENT | TRANSFORM_REQUEST | TRANSFORM_RESPONSE | PIPELINE_REQUEST | PIPELINE_RESPONSE | ERROR",
+  "timestamp": "2025-12-11T21:00:00Z",
+  "payload": { /* type-specific */ },
+  "meta": {
+    "project": "optional-project-id-or-name",
+    "user": "optional-user-id-or-alias",
+    "source": "radiant | dropframe | grindline | other",
+    "tags": ["optional", "labels"]
+  }
+}
+````
+
+Radiant and its modules must preserve the envelope shape even when they only care about `payload`.
+
+---
+
+## 3. Message Types
+
+### 3.1 INTENT
+
+Represents what the user wants to do in natural or structured form.
+
+```json
+{
+  "type": "INTENT",
+  "payload": {
+    "intent_id": "string",
+    "mode": "story" | "content" | "analysis" | "other",
+    "description": "User-facing description of what they want",
+    "inputs": {
+      "text": "optional raw text",
+      "references": ["optional-ids-or-links"]
+    },
+    "constraints": {
+      "framework": "save-the-cat | heros-journey | none | custom",
+      "length": "short | medium | long | custom",
+      "tone": "optional",
+      "format": "optional"
+    }
+  }
+}
+```
+
+Radiant receives INTENT messages, interprets them, and decides whether to call DropFrame, Grindline, or respond directly.
+
+---
+
+### 3.2 TRANSFORM_REQUEST (→ DropFrame)
+
+Used when Radiant asks DropFrame to transform content.
+
+```json
+{
+  "type": "TRANSFORM_REQUEST",
+  "payload": {
+    "request_id": "string",
+    "mode": "scene" | "beat" | "structure" | "rewrite",
+    "input": "raw-or-partially-structured-text",
+    "constraints": {
+      "tone": "optional",
+      "style": "optional",
+      "format": "optional"
+    },
+    "context": {
+      "project": "string",
+      "framework": "optional-framework-name",
+      "notes": "optional freeform context"
+    }
+  }
+}
+```
+
+#### 3.2.1 Modes
+
+* `scene` — convert text into a scene representation.
+* `beat` — extract beats or outline points.
+* `structure` — map content into a Radiant schema (e.g., Save the Cat slots).
+* `rewrite` — refactor for clarity / tone / quality.
+
+---
+
+### 3.3 TRANSFORM_RESPONSE (← DropFrame)
+
+DropFrame returns transformed output.
+
+```json
+{
+  "type": "TRANSFORM_RESPONSE",
+  "payload": {
+    "request_id": "string",
+    "status": "ok" | "error",
+    "output": "transformed-text-if-ok",
+    "structure": {
+      "schema": "radiant-v0.1",
+      "nodes": [
+        {
+          "id": "node-id",
+          "type": "scene | beat | doc-section | other",
+          "label": "optional-human-label",
+          "content": "text-or-structured-subcontent"
+        }
+      ]
+    },
+    "notes": [
+      "optional string notes or warnings"
+    ],
+    "error": "optional-error-message-if-status-is-error"
+  }
+}
+```
+
+Radiant may pass `output` and/or `structure` downstream to Grindline.
+
+---
+
+### 3.4 PIPELINE_REQUEST (→ Grindline)
+
+Used when Radiant asks Grindline to run a batch or pipeline.
+
+```json
+{
+  "type": "PIPELINE_REQUEST",
+  "payload": {
+    "pipeline_id": "string",
+    "pipeline": "story-batch" | "content-batch" | "custom",
+    "input": {
+      "source_asset": "text-or-reference",
+      "structure": {
+        "schema": "radiant-v0.1",
+        "nodes": []
+      }
+    },
+    "config": {
+      "passes": 1,
+      "variants": 1,
+      "format": "markdown | json | text | docx",
+      "post_process": "none | summarize | outline | custom"
+    },
+    "metadata": {
+      "project": "string",
+      "batch_label": "optional"
+    }
+  }
+}
+```
+
+---
+
+### 3.5 PIPELINE_RESPONSE (← Grindline)
+
+Grindline’s response to a PIPELINE_REQUEST.
+
+```json
+{
+  "type": "PIPELINE_RESPONSE",
+  "payload": {
+    "pipeline_id": "string",
+    "status": "ok" | "error",
+    "outputs": [
+      {
+        "id": "output-id",
+        "content": "generated-text-or-structured-data",
+        "format": "markdown | json | text | docx"
+      }
+    ],
+    "metadata": {
+      "count": 1,
+      "pipeline": "story-batch | content-batch | custom"
+    },
+    "error": "optional-error-message-if-status-is-error"
+  }
+}
+```
+
+---
+
+### 3.6 ERROR
+
+Any part of the system can emit an `ERROR` message when something fails.
+
+```json
+{
+  "type": "ERROR",
+  "payload": {
+    "source": "radiant | dropframe | grindline | other",
+    "code": "string-error-code",
+    "message": "human-readable message",
+    "details": {}
+  }
+}
+```
+
+Radiant should log these and, if needed, present a simpler explanation to the user.
+
+---
+
+## 4. Story OS Shapes (High-Level)
+
+Radiant Protocol v0.1 defines a few minimal shapes for story work.
+These will be refined as the system matures.
+
+### 4.1 Scene Node
+
+```json
+{
+  "id": "scene-1",
+  "type": "scene",
+  "label": "optional short label",
+  "content": "scene text",
+  "meta": {
+    "location": "optional",
+    "time": "optional",
+    "characters": ["optional-list"],
+    "beat_ref": "optional-beat-id"
+  }
+}
+```
+
+### 4.2 Beat Node
+
+```json
+{
+  "id": "beat-1",
+  "type": "beat",
+  "label": "Setup / Catalyst / etc.",
+  "content": "brief description of what happens",
+  "meta": {
+    "framework": "save-the-cat | custom",
+    "slot": "Opening Image | Theme Stated | etc."
+  }
+}
+```
+
+### 4.3 Document Node
+
+```json
+{
+  "id": "doc-1",
+  "type": "doc-section",
+  "label": "Chapter 1",
+  "content": "chapter text",
+  "meta": {
+    "order": 1
+  }
+}
+```
+
+All of these travel inside the `structure.nodes` array in responses.
+
+---
+
+## 5. Versioning
+
+`version` field in the envelope:
+
+* `radiant-protocol-v0.1` — current
+* Future versions should be: `radiant-protocol-v0.2`, etc.
+
+Modules must:
+
+* accept known versions
+* reject or warn on unknown ones
+
+---
+
+## 6. Philosophy
+
+Radiant Protocol is intentionally:
+
+* **Simple** — small set of message types.
+* **Extensible** — `payload` and `meta` can grow.
+* **Systemic** — treats stories as systems and flows.
+* **Collaboration-aware** — designed for human + AI co-work, not just automation.
+
+This is a living spec and will evolve with the Radiant System and its modules.
+

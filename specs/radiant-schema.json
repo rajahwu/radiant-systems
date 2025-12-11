@@ -1,0 +1,145 @@
+{
+  "$id": "radiant-schema-v0.1",
+  "description": "Core shapes for Radiant Protocol v0.1",
+  "version": "0.1",
+  "envelope": {
+    "id": "string",
+    "version": "radiant-protocol-v0.1",
+    "type": "INTENT | TRANSFORM_REQUEST | TRANSFORM_RESPONSE | PIPELINE_REQUEST | PIPELINE_RESPONSE | ERROR",
+    "timestamp": "ISO-8601 string",
+    "payload": {},
+    "meta": {
+      "project": "string (optional)",
+      "user": "string (optional)",
+      "source": "radiant | dropframe | grindline | other",
+      "tags": ["string"]
+    }
+  },
+  "message_types": {
+    "INTENT": {
+      "intent_id": "string",
+      "mode": "story | content | analysis | other",
+      "description": "string",
+      "inputs": {
+        "text": "string (optional)",
+        "references": ["string"]
+      },
+      "constraints": {
+        "framework": "string (optional)",
+        "length": "short | medium | long | custom",
+        "tone": "string (optional)",
+        "format": "string (optional)"
+      }
+    },
+    "TRANSFORM_REQUEST": {
+      "request_id": "string",
+      "mode": "scene | beat | structure | rewrite",
+      "input": "string",
+      "constraints": {
+        "tone": "string (optional)",
+        "style": "string (optional)",
+        "format": "string (optional)"
+      },
+      "context": {
+        "project": "string",
+        "framework": "string (optional)",
+        "notes": "string (optional)"
+      }
+    },
+    "TRANSFORM_RESPONSE": {
+      "request_id": "string",
+      "status": "ok | error",
+      "output": "string",
+      "structure": {
+        "schema": "radiant-v0.1",
+        "nodes": [
+          {
+            "id": "string",
+            "type": "scene | beat | doc-section | other",
+            "label": "string (optional)",
+            "content": "string",
+            "meta": {}
+          }
+        ]
+      },
+      "notes": ["string"],
+      "error": "string (optional)"
+    },
+    "PIPELINE_REQUEST": {
+      "pipeline_id": "string",
+      "pipeline": "story-batch | content-batch | custom",
+      "input": {
+        "source_asset": "string",
+        "structure": {
+          "schema": "radiant-v0.1",
+          "nodes": []
+        }
+      },
+      "config": {
+        "passes": "number",
+        "variants": "number",
+        "format": "markdown | json | text | docx",
+        "post_process": "none | summarize | outline | custom"
+      },
+      "metadata": {
+        "project": "string",
+        "batch_label": "string (optional)"
+      }
+    },
+    "PIPELINE_RESPONSE": {
+      "pipeline_id": "string",
+      "status": "ok | error",
+      "outputs": [
+        {
+          "id": "string",
+          "content": "string",
+          "format": "markdown | json | text | docx"
+        }
+      ],
+      "metadata": {
+        "count": "number",
+        "pipeline": "string"
+      },
+      "error": "string (optional)"
+    },
+    "ERROR": {
+      "source": "radiant | dropframe | grindline | other",
+      "code": "string",
+      "message": "string",
+      "details": {}
+    }
+  },
+  "story_nodes": {
+    "scene": {
+      "id": "string",
+      "type": "scene",
+      "label": "string (optional)",
+      "content": "string",
+      "meta": {
+        "location": "string (optional)",
+        "time": "string (optional)",
+        "characters": ["string"],
+        "beat_ref": "string (optional)"
+      }
+    },
+    "beat": {
+      "id": "string",
+      "type": "beat",
+      "label": "string",
+      "content": "string",
+      "meta": {
+        "framework": "string (optional)",
+        "slot": "string (optional)"
+      }
+    },
+    "doc_section": {
+      "id": "string",
+      "type": "doc-section",
+      "label": "string",
+      "content": "string",
+      "meta": {
+        "order": "number"
+      }
+    }
+  }
+}

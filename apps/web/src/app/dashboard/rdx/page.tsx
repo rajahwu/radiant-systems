@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { SessionManager } from '../../rdx/core/SessionManager';
 import { Session } from '../../rdx/types/session.types';
 
@@ -31,6 +32,12 @@ export default function RDXPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-8 font-sans">
+      <Link
+        href="/manual"
+        className="inline-flex items-center gap-2 mb-6 text-teal-400 hover:text-teal-300 transition-colors"
+      >
+        ← Back to Manual
+      </Link>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         
         {/* Left Column: Documentation */}

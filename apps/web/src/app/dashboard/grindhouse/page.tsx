@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 // 1. We leverage the Clearline 7 Design System directly from your monorepo
 import { SetDefinitionProvider } from '@clearline7/theme'
 import { TechDocs } from '@clearline7/set-definitions'
@@ -29,7 +30,13 @@ export default function GrindhousePage() {
   return (
     <SetDefinitionProvider setDefinition={TechDocs}>
     <div className="max-w-6xl mx-auto p-8 font-sans text-cream-50">
-      
+      <Link
+        href="/manual"
+        className="inline-flex items-center gap-2 mb-6 text-teal-400 hover:text-teal-300 transition-colors"
+      >
+        ← Back to Manual
+      </Link>
+
       {/* HEADER SECTION */}
       <div className="mb-12 border-b border-charcoal-700 pb-6">
         <Heading level={1}>2. Grindhouse</Heading>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { SetDefinitionProvider } from '@clearline7/theme'
 import { TechDocs } from '@clearline7/set-definitions'
 import { Card, Heading, Button } from '@clearline7/components';
@@ -36,6 +37,12 @@ export default function Clearline7Page() {
   return (
     <div className="max-w-6xl mx-auto p-8 font-sans text-cream-50">
       <SetDefinitionProvider setDefinition={TechDocs} >
+      <Link
+        href="/manual"
+        className="inline-flex items-center gap-2 mb-6 text-teal-400 hover:text-teal-300 transition-colors"
+      >
+        ← Back to Manual
+      </Link>
       {/* HEADER */}
       <div className="mb-12 border-b border-charcoal-700 pb-6 flex justify-between items-end">
         <div>

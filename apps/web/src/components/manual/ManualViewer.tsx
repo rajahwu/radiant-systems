@@ -53,8 +53,9 @@ export default function ManualViewer() {
 
   return (
     <div className="text-gray-100">
+      <Header />
       <SectionTabs active={activeSection} onChange={setActiveSection} />
-      
+
       {activeSection === 'build-order' && (
         <BuildOrderView sections={document.sections.buildOrder} />
       )}

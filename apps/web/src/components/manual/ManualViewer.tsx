@@ -52,8 +52,7 @@ export default function ManualViewer() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 text-gray-100">
-      <Header />
+    <div className="text-gray-100">
       <SectionTabs active={activeSection} onChange={setActiveSection} />
       
       {activeSection === 'build-order' && (
@@ -68,8 +67,6 @@ export default function ManualViewer() {
       {activeSection === 'billables' && document.sections.billables && (
         <BillablesView data={document.sections.billables} />
       )}
-      
-      <Footer />
-    </main>
+    </div>
   );
 }

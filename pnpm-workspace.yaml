@@ -1,7 +1,4 @@
 packages:
   - "apps/*"
   - "packages/*"
-  - "radiant_systems"
-  - "2025-12-31_0447_build-doc/radiant-manual"
-  - "2025-12-31_0447_build-doc/StudioTriptych/app"
   - "clearline7-monorepo/packages/*"

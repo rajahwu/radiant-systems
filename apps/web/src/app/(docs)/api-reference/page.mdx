@@ -1,0 +1,48 @@
+# API Reference & Message Contracts
+
+This section details the JSON message contracts used for communication between Radiant, DropFrame, and Grindline.
+
+## Request Types
+
+### `TRANSFORM_REQUEST`
+
+```json
+{
+  "type": "TRANSFORM_REQUEST",
+  "payload": {
+    "mode": "scene | beat",
+    "input": "string",
+    "constraints": {}
+  }
+}
+```
+
+### `PIPELINE_REQUEST`
+
+```json
+{
+  "type": "PIPELINE_REQUEST",
+  "payload": {
+    "pipeline": "story-batch",
+    "input": {},
+    "config": {}
+  }
+}
+```
+
+## Response Types
+
+### `TRANSFORM_RESPONSE`
+
+```json
+{
+  "type": "TRANSFORM_RESPONSE",
+  "payload": {
+    "status": "ok | error",
+    "output": "string",
+    "structure": {}
+  }
+}
+```
+
+For full protocol details, see the [Protocol Documentation](/protocol).

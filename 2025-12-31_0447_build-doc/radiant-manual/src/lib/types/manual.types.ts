@@ -102,10 +102,22 @@ export interface Phase {
 
 // Billables Section
 export interface BillablesSection {
+  summary: string;
   components: ComponentValue[];
+  totalSumOfParts: {
+    low: number;
+    high: number;
+  };
   pricingModels: PricingModel[];
+  consultingModel: Record<string, {
+    name: string;
+    price: string;
+    duration?: string;
+    description?: string;
+  }>;
   strategicDifferentiators: string[];
   finalValuation: Valuation;
+  conclusion: string;
 }
 
 export interface ComponentValue {

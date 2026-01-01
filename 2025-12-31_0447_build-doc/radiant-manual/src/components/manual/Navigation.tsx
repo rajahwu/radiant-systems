@@ -1,7 +1,7 @@
-import { ManualSection } from '@/lib/types/manual.types';
+import { ManualSections } from '@/lib/types/manual.types';
 
 interface NavigationProps {
-  sections: ManualSection[];
+  sections: ManualSections[];
 }
 
 export default function Navigation({ sections }: NavigationProps) {

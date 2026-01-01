@@ -1,0 +1,4 @@
+{
+  "extends": "@radiant/config/typescript",
+  "include": ["src"]
+}

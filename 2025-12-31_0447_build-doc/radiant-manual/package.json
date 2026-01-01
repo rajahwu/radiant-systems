@@ -12,6 +12,7 @@
     "@clearline7/components": "workspace:*",
     "@clearline7/set-definitions": "workspace:*",
     "@clearline7/theme": "workspace:*",
+    "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3"

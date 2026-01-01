@@ -1,169 +1,214 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
-// import { Card, Heading } from '@clearline7/components';
-
-const Card = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => {
-  return <div className={`rounded-lg shadow-md p-6 bg-charcoal-800 ${className}`}>{children}</div>
-}
-
-const Badge = ({ children, variant = 'default', className = '' }: { children: React.ReactNode, variant?: 'default' | 'outline', className?: string }) => {
-  return <span className="px-2 py-1 bg-gray-700 rounded text-xs">{children}</span>
-}
+import { 
+  ArrowRight, Zap, Database, Cpu, Factory, 
+  GraduationCap, Network, Layout, Radio, 
+  CheckCircle, Terminal 
+} from 'lucide-react';
 
 const MODULES = [
   { 
     id: '01', 
     slug: 'rdx', 
     title: 'RDX Session', 
+    icon: Database,
     role: 'Foundation Layer', 
-    desc: 'Immutable logs & session tracking.',
-    color: 'border-teal-500',
-    status: 'ONLINE'
+    desc: 'Immutable session logging and agent tracking database.',
+    color: 'text-teal-500',
+    bg: 'bg-teal-50',
+    border: 'border-teal-100'
   },
   { 
     id: '02', 
     slug: 'grindhouse', 
     title: 'Grindhouse', 
+    icon: Cpu,
     role: 'Execution Layer', 
-    desc: 'Dropframe Research & Grindline Production.',
-    color: 'border-purple-500',
-    status: 'ONLINE'
+    desc: 'Dropframe Research & Grindline Production engines.',
+    color: 'text-purple-600',
+    bg: 'bg-purple-50',
+    border: 'border-purple-100'
   },
   { 
     id: '03', 
     slug: 'content-factor', 
     title: 'Content Factor', 
+    icon: Factory,
     role: 'Pipeline Layer', 
-    desc: 'Asset transformation & assembly line.',
-    color: 'border-indigo-500',
-    status: 'IDLE'
+    desc: 'Asset transformation assembly line and ingest protocols.',
+    color: 'text-indigo-600',
+    bg: 'bg-indigo-50',
+    border: 'border-indigo-100'
   },
   { 
     id: '04', 
     slug: 'vsm-school', 
     title: 'VSM School', 
+    icon: GraduationCap,
     role: 'Education Layer', 
-    desc: 'Visual Systems Mastery curriculum.',
-    color: 'border-yellow-500',
-    status: 'ACTIVE'
+    desc: 'Visual Systems Mastery curriculum and training cards.',
+    color: 'text-amber-500',
+    bg: 'bg-amber-50',
+    border: 'border-amber-100'
   },
   { 
     id: '05', 
     slug: 'lattice-sync', 
     title: 'Lattice Sync', 
+    icon: Network,
     role: 'Coordination Layer', 
-    desc: 'Multi-agent state federation.',
-    color: 'border-blue-500',
-    status: 'LOCKED'
+    desc: 'Multi-agent state federation and handoff protocols.',
+    color: 'text-blue-600',
+    bg: 'bg-blue-50',
+    border: 'border-blue-100'
   },
   { 
     id: '06', 
     slug: 'clearline-7', 
     title: 'Clearline 7', 
+    icon: Layout,
     role: 'Formatting Layer', 
-    desc: 'Design system & enforcement rig.',
-    color: 'border-gray-400',
-    status: 'READY'
+    desc: 'Design system enforcement rig and document generation.',
+    color: 'text-slate-600',
+    bg: 'bg-slate-50',
+    border: 'border-slate-100'
   },
   { 
     id: '07', 
     slug: 'rit-ops', 
     title: 'RIT Ops', 
+    icon: Radio,
     role: 'Publication Layer', 
-    desc: 'Public interface & signal control.',
-    color: 'border-red-500',
-    status: 'LIVE'
+    desc: 'Public signal control, deployment, and analytics.',
+    color: 'text-red-500',
+    bg: 'bg-red-50',
+    border: 'border-red-100'
   }
 ];
 
-export default function CommandDashboard() {
-  const [time, setTime] = useState('');
-
-  useEffect(() => {
-    setTime(new Date().toLocaleTimeString());
-    const timer = setInterval(() => setTime(new Date().toLocaleTimeString()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
+export default function WorkSurface() {
   return (
-    <main className="min-h-screen p-8 font-sans bg-charcoal-900 text-cream-50 selection:bg-teal-300 selection:text-charcoal-900">
+    <div className="min-h-screen bg-gradient-to-br from-charcoal-900 to-black text-white font-sans selection:bg-teal-500/30">
       
-      {/* COMMAND HEADER */}
-      <header className="mb-12 border-b-2 border-charcoal-700 pb-6 flex flex-col md:flex-row justify-between items-end">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="h-4 w-4 bg-teal-300 rounded-sm animate-pulse shadow-[0_0_10px_rgba(50,184,184,0.5)]"></div>
-            <span className="font-mono text-sm text-teal-300 tracking-widest">SYSTEM_READY</span>
+      {/* Top Navigation */}
+      <nav className="border-b border-white/10 backdrop-blur-md sticky top-0 z-50 bg-black/50">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-tr from-teal-400 to-blue-500 rounded flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white fill-current" />
+            </div>
+            <span className="text-lg font-bold tracking-tight text-white">Radiant OS <span className="opacity-50 font-normal">| Internal</span></span>
           </div>
-          <h1 className="text-5xl font-bold tracking-tighter text-white">RADIANT SEVEN</h1>
-          <p className="text-xl text-gray-400 mt-2 font-light">Operational Command Deck</p>
-        </div>
-
-        <div className="text-right mt-6 md:mt-0">
-          <div className="font-mono text-3xl text-gray-200">{time}</div>
-          <div className="font-mono text-xs text-gray-500 uppercase tracking-widest mt-1">
-            Local Time / Philadelphia / US-EST
+          <div className="flex items-center space-x-6 text-sm font-medium">
+            <span className="text-green-400 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"/> 
+              System Online
+            </span>
+            <div className="h-4 w-px bg-white/20"></div>
+            <span className="text-gray-400">v1.0.0</span>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* MODULE GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {MODULES.map((mod) => (
-          <Link href={`/${mod.slug}`} key={mod.id} className="group">
-            <Card className={`h-full p-6 bg-charcoal-800 border-l-4 ${mod.color} hover:bg-charcoal-700 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl group-hover:border-l-8`}>
-              
-              <div className="flex justify-between items-start mb-4">
-                <span className="font-mono text-4xl font-bold text-gray-700 opacity-30 group-hover:opacity-50 transition-opacity">
-                  {mod.id}
-                </span>
-                <Badge variant="outline" className="font-mono text-xs border-gray-600 group-hover:border-white transition-colors">
-                  {mod.status}
-                </Badge>
-              </div>
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-32 overflow-hidden">
+        {/* Background Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+        
+        <div className="relative max-w-5xl mx-auto px-6 text-center">
+          <div className="inline-flex items-center px-3 py-1 rounded-full border border-teal-500/30 bg-teal-500/10 text-teal-300 text-xs font-mono mb-8 backdrop-blur-sm">
+            <Terminal className="w-3 h-3 mr-2" />
+            OPERATIONAL DOCTRINE ENCODED
+          </div>
+          
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8">
+            The Work Surface for
+            <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-blue-400 to-purple-400">
+              Visual Systems Mastery
+            </span>
+          </h1>
+          
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+            You are not just writing documentation. You are operating the machine. 
+            Access the integrated build environment for the Radiant Seven ecosystem.
+          </p>
 
-              <h2 className="text-2xl font-bold text-white mb-1 group-hover:text-teal-300 transition-colors">
-                {mod.title}
-              </h2>
-              <div className="text-xs font-mono text-gray-400 uppercase tracking-widest mb-4">
-                {mod.role}
-              </div>
-              
-              <p className="text-gray-400 leading-relaxed text-sm">
-                {mod.desc}
-              </p>
-
-              <div className="mt-6 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-2 group-hover:translate-x-0">
-                <span className="text-teal-300 font-mono text-sm">ACCESS MODULE →</span>
-              </div>
-
-            </Card>
-          </Link>
-        ))}
-      </div>
-
-      {/* FOOTER METRICS */}
-      <footer className="mt-20 border-t border-charcoal-800 pt-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-xs font-mono text-gray-500 uppercase tracking-widest">
-        <div>
-          <span className="block text-gray-700 mb-1">Version</span>
-          <span className="text-gray-300">v1.0.0 (Build 2025-12-31)</span>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="#modules" className="bg-white text-black px-8 py-4 rounded-lg font-bold hover:bg-gray-200 transition-all flex items-center group">
+              Access Modules
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </a>
+            <a href="/rdx" className="px-8 py-4 rounded-lg border border-white/20 hover:bg-white/5 transition-all text-gray-300">
+              Initialize RDX Session
+            </a>
+          </div>
         </div>
-        <div>
-          <span className="block text-gray-700 mb-1">Architecture</span>
-          <span className="text-gray-300">Next.js / SQLite / Clearline 7</span>
+      </section>
+
+      {/* Modules Grid (The Build Order) */}
+      <section id="modules" className="py-24 bg-charcoal-900 relative">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">System Architecture</h2>
+            <p className="text-gray-400">Active modules and operational status.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {MODULES.map((mod) => (
+              <Link href={`/${mod.slug}`} key={mod.id} className="group">
+                <div className="h-full bg-white/5 border border-white/10 rounded-xl p-8 hover:border-teal-500/50 hover:bg-white/10 transition-all duration-300 relative overflow-hidden">
+                  
+                  {/* Hover Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                  <div className="relative z-10">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className={`w-12 h-12 rounded-lg ${mod.bg} ${mod.color} flex items-center justify-center border ${mod.border}`}>
+                        <mod.icon className="w-6 h-6" />
+                      </div>
+                      <span className="font-mono text-xs text-gray-500 border border-white/10 px-2 py-1 rounded">
+                        {mod.id}
+                      </span>
+                    </div>
+
+                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-teal-300 transition-colors">
+                      {mod.title}
+                    </h3>
+                    <p className="text-xs font-mono text-teal-500/80 mb-4 uppercase tracking-wider">
+                      {mod.role}
+                    </p>
+                    <p className="text-gray-400 leading-relaxed text-sm">
+                      {mod.desc}
+                    </p>
+                  </div>
+
+                  <div className="absolute bottom-8 right-8 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
+                    <ArrowRight className="w-6 h-6 text-teal-300" />
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
-        <div>
-          <span className="block text-gray-700 mb-1">Environment</span>
-          <span className="text-gray-300">Local / OptiPlex Host</span>
-        </div>
-        <div>
-          <span className="block text-gray-700 mb-1">Operator</span>
-          <span className="text-teal-500">Authenticated</span>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 bg-black py-12">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+          <div className="flex items-center space-x-2 mb-4 md:mb-0">
+            <Zap className="w-4 h-4" />
+            <span>Radiant Systems &copy; 2026</span>
+          </div>
+          <div className="flex items-center space-x-6">
+            <span>OptiPlex Host</span>
+            <span>Local Environment</span>
+            <span className="text-green-500">Connected</span>
+          </div>
         </div>
       </footer>
 
-    </main>
+    </div>
   );
 }

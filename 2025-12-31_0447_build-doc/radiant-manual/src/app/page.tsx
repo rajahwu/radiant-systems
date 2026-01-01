@@ -1,4 +1,4 @@
-import { ManualViewer } from "@/components/build-order-manual";
+import { ManualViewer } from "@/components/manual";
 import "./globals.css";
 
 export default function Page() {

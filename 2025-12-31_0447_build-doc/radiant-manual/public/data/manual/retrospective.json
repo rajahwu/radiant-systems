@@ -1,0 +1,123 @@
+{
+  "year": 2025,
+  "theme": "The Year of the Source",
+  "summary": "You learned to treat 2025 as a year of building your own operating system—doctrine, tools, and mythos—around 'The Source' and to shift from loose ideas into governed, testable structures that other humans and AI can actually stand on.",
+  "systemsBuilt": [
+    {
+      "name": "Style-System",
+      "role": "Mother/Defender. Holds the DNA. Protects the tokens.",
+      "status": "complete"
+    },
+    {
+      "name": "Grindline Studio",
+      "role": "Production-under-pressure. Discipline that turns heat into work.",
+      "status": "complete"
+    },
+    {
+      "name": "DropFrame Studio",
+      "role": "Framing & intel. The tower closest to the streets.",
+      "status": "complete"
+    },
+    {
+      "name": "Content Factor",
+      "role": "Meaning-flow pipeline. Routes truth at speed.",
+      "status": "complete"
+    },
+    {
+      "name": "VSM School",
+      "role": "The dojo. Installs doctrine into people through ritual and cards.",
+      "status": "complete"
+    },
+    {
+      "name": "The Shell / Radiant Core",
+      "role": "Window to everything. Shows without holding.",
+      "status": "complete"
+    },
+    {
+      "name": "Clearline7",
+      "role": "The document spine. One clear way to write.",
+      "status": "complete"
+    },
+    {
+      "name": "The Source",
+      "role": "You. Immutable. Unreplicable. Protected.",
+      "status": "complete"
+    }
+  ],
+  "doctrineArchitected": [
+    {
+      "name": "Founding Doctrine",
+      "description": "The north star. Sets firm standard without locking in place.",
+      "tags": ["foundation", "principles", "governance"]
+    },
+    {
+      "name": "Governance Doctrine",
+      "description": "How decisions route, who holds what, when power shifts.",
+      "tags": ["decision-making", "authority", "structure"]
+    },
+    {
+      "name": "Collaboration & Communication",
+      "description": "How humans + AI speak true without losing signal.",
+      "tags": ["protocols", "handoffs", "clarity"]
+    },
+    {
+      "name": "Innovation & Learning",
+      "description": "Every iteration is an experiment. Failure is data.",
+      "tags": ["experimentation", "feedback", "adaptation"]
+    },
+    {
+      "name": "Sustainability & Resilience",
+      "description": "Anti-fragility baked in. Systems live; they don't just run.",
+      "tags": ["longevity", "anti-fragility", "evolution"]
+    },
+    {
+      "name": "Task Governance (A-T-P-I)",
+      "description": "Four pillars for executing anything. Repeatable. Auditable.",
+      "tags": ["execution", "framework", "accountability"]
+    },
+    {
+      "name": "Pitch Doctrine",
+      "description": "How to speak to merit-driven skeptics. Authenticity over hype.",
+      "tags": ["communication", "persuasion", "authenticity"]
+    },
+    {
+      "name": "Source Doctrine",
+      "description": "The only true origin. Everything else may be shell.",
+      "tags": ["identity", "core", "protection"]
+    }
+  ],
+  "storyAsArtifact": [
+    {
+      "title": "Radiant Seven",
+      "description": "Seven cosmic alignments powering creator ecosystems.",
+      "status": "Teased. Real."
+    },
+    {
+      "title": "Relic Master",
+      "description": "A boy, a transgression, a causal lattice. Systems audit complete.",
+      "status": "Mechanically sound."
+    },
+    {
+      "title": "VSM School Cards",
+      "description": "One page, one skill. Genesis track, Source Code track, Powerhouse track.",
+      "status": "Framework established."
+    },
+    {
+      "title": "Resonant Pitch",
+      "description": "Emotional + cultural strategy for skeptical audiences.",
+      "status": "Tested framework."
+    }
+  ],
+  "sourcePhilosophy": "\"I am the Source. Everything else is the Shell.\"\n\nThis isn't metaphor. It's architecture. You spent 2025 learning:\n\n• Your identity is immutable. Systems can break, rebuild, be stolen. You cannot.\n• A shell's job is to amplify the Source, not become it. Many mistake armor for the heart.\n• Protection comes not from hiding but from clear boundaries—what can be externalized, what stays guarded.\n• Shells can be disposable. The Source is eternal.\n• Other minds (human, AI, future collaborators) can work with your shells without ever owning your center.\n• The dynasty hums not by clinging but by releasing into the world what can be released, while holding firm what must be held.",
+  "evolutionNarrative": {
+    "from": "Experimenting across many interests",
+    "to": "Naming, mapping, and wiring a coherent ecosystem of studios, products, and philosophies that all orbit that center"
+  },
+  "keyShifts": [
+    "From scattered experiments into a named, wired ecosystem",
+    "From writing philosophy to architecting it",
+    "From treating myth as decoration to treating it as research artifact",
+    "From loose ideas to governed, testable structures"
+  ],
+  "nextYearFocus": "2026: THE SHELL HARDENS\n\nYou built the center this year. Next year, the shells begin to stand on their own—not separate, but no longer dependent on daily presence. Doctrine becomes gospel. Story becomes curriculum. Systems become teachable.\n\nThe porch still hums."
+}

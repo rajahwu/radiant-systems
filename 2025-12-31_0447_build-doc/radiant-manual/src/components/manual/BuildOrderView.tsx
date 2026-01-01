@@ -1,10 +1,18 @@
-import { ManualSection } from '@/lib/types/manual.types';
+import { BuildOrderSection } from '@/lib/types/manual.types';
 
-interface ContentsProps {
-  sections: ManualSection[];
+interface BuildOrderViewProps {
+  sections: BuildOrderSection[];
 }
 
-export default function Contents({ sections }: ContentsProps) {
+export default function BuildOrderView({ sections }: BuildOrderViewProps) {
+  if (!sections || sections.length === 0) {
+    return (
+      <div className="max-w-6xl mx-auto px-8 py-12 text-center">
+        <p className="text-gray-400 text-lg">No build order sections available</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto px-8 py-12 space-y-24">
       {sections.map((section) => (

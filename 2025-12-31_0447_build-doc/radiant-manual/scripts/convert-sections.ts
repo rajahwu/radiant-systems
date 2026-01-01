@@ -1,5 +1,5 @@
 // scripts/convert-sections.ts
-import MANUAL_SECTIONS from '../src/components/build-order-manual/sections-data';
+import MANUAL_SECTIONS from '../src/components/manual/sections-data';
 import { writeFileSync } from 'fs';
 
 const data = {

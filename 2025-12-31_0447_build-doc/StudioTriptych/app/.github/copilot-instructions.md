@@ -1,0 +1,23 @@
+# Copilot Project Guide
+
+- Purpose: this Vite React TS app is a staging ground to convert the Radiant Seven scaffolds into a navigable React experience and ultimately migrate to Next.js; see [README.md](README.md#L1-L9).
+- Primary source material lives in [src/pages/rd7-full-project-scaffolds.html](src/pages/rd7-full-project-scaffolds.html) (design tokens, build order diagrams, file structures, copy). Do not delete; extract content into React components/sections.
+- Current UI entry flow: [src/main.tsx](src/main.tsx) mounts [src/App.tsx](src/App.tsx), which renders [src/pages/StudioTriptych.tsx](src/pages/StudioTriptych.tsx) as the single page shell.
+- StudioTriptych is a static, inline-styled landing (hero + three studio cards + “System Architecture” cards). Treat it as a placeholder to be broken into smaller components fed by data, not a final design.
+- Styling direction: goal is Tailwind utilities (per README) and design tokens from rd7 HTML; existing [src/index.css](src/index.css) and [src/App.css](src/App.css) are Vite defaults and can be phased out once Tailwind is introduced.
+- Images/placeholders: StudioTriptych currently uses `backgroundImage: 'url(/api/placeholder/1920/1080)'`; replace with real assets or local static files under `public/` when available.
+- Future migration: plan components so they are framework-agnostic (no Vite-only APIs) to ease the Next.js move; avoid assumptions about SSR until the migration starts.
+- Content extraction tips: rd7 HTML includes design language variables (colors, typography, spacing, shadows) near the top and multiple domain sections (RDX Session, Grindhouse, Content Factor, Lattice Sync, VSM School, Clearline7, RIT/RitOps). Mirror this structure as data-driven sections rather than hardcoding massive JSX blocks.
+- Data modeling: prefer structured data arrays/objects for sections (e.g., studio cards, architecture items) and map to presentational components; this enables search/navigation features requested in README.
+- Navigation/search goals: architect components so section titles/ids from rd7 HTML can become anchors and searchable metadata; consider lifting content into JSON/TS modules for reuse.
+- Build commands (pnpm preferred because pnpm-lock.yaml exists): `pnpm install`, `pnpm dev`, `pnpm build` (runs `tsc -b && vite build`), `pnpm lint`, `pnpm preview`; see [package.json](package.json#L1-L30).
+- Tooling: Vite config is minimal with @vitejs/plugin-react only; modify [vite.config.ts](vite.config.ts#L1-L8) if adding Tailwind/PostCSS or aliasing.
+- TypeScript: React 19.2 + TS 5.9; keep components typed and avoid deprecated React APIs.
+- Routing: none yet; any multi-section navigation should be client-side within the single page until Next.js routing is introduced.
+- Tests: none present; if adding, choose a light setup consistent with Vite (e.g., Vitest) and document new commands here.
+- Linting: base ESLint config in [eslint.config.js](eslint.config.js) uses React plugin defaults; extend if you add Tailwind class sorting or TS type-aware rules.
+- CSS assets: clean up legacy Vite styles when migrating—ensure new global styles keep sensible defaults for body/root sizing currently in [src/index.css](src/index.css#L1-L38).
+- State management: no global state; prefer local component state or lifted props. Introduce external state libraries only with rationale.
+- Accessibility: ensure text contrast and keyboard focus are preserved when translating styles from rd7 HTML (which assumes high-contrast teal/charcoal palette).
+- File placement: new shared UI pieces should live under `src/components/`; page-level compositions under `src/pages/` until a router is added.
+- Keep commits small and document significant architectural moves (e.g., Tailwind setup, Next.js migration plan) in README updates.

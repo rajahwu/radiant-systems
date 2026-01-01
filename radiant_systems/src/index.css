@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Radiant Systems Design Language - All colors, gradients, fonts, etc defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Radiant Systems Color Palette */
+    /* Foundation Colors - Neutrals */
+    --color-white: 0 0% 100%;
+    --color-cream-50: 60 33% 98%; /* Body background */
+    --color-cream-100: 60 25% 99%; /* Surface, cards */
+    --color-gray-200: 0 0% 96%; /* Borders, dividers */
+    --color-gray-300: 0 2% 66%; /* Disabled states */
+    
+    /* Text Colors */
+    --color-charcoal-700: 180 3% 12%;
+    --color-charcoal-800: 180 3% 15%; /* Primary headings */
+    --color-slate-900: 195 46% 15%; /* Body text */
+    --color-text-secondary: 195 7% 41%; /* Labels, captions */
+    
+    /* Brand Colors */
+    --color-teal-400: 180 50% 60%; /* Light accent */
+    --color-teal-500: 180 61% 33%; /* Primary brand color - rgb(33, 128, 141) */
+    --color-teal-600: 180 61% 28%; /* Hover, pressed states */
+    --color-red-500: 0 84% 60%; /* Error, urgent, warning */
+    
+    /* Functional Aliases */
+    --background: var(--color-cream-50);
+    --foreground: var(--color-slate-900);
+    --surface: var(--color-cream-100);
+    --primary: var(--color-teal-500);
+    --primary-foreground: var(--color-white);
+    --primary-hover: var(--color-teal-600);
+    
+    --card: var(--color-cream-100);
+    --card-foreground: var(--color-slate-900);
+    
+    --popover: var(--color-white);
+    --popover-foreground: var(--color-slate-900);
+    
+    --secondary: var(--color-gray-200);
+    --secondary-foreground: var(--color-charcoal-800);
+    
+    --muted: var(--color-gray-200);
+    --muted-foreground: var(--color-text-secondary);
+    
+    --accent: var(--color-teal-400);
+    --accent-foreground: var(--color-charcoal-800);
+    
+    --destructive: var(--color-red-500);
+    --destructive-foreground: var(--color-white);
+    
+    --border: var(--color-gray-200);
+    --input: var(--color-gray-200);
+    --ring: var(--color-teal-500);
+    
+    /* Spacing System - 4px base unit */
+    --space-4: 4px;
+    --space-8: 8px;
+    --space-12: 12px;
+    --space-16: 16px;
+    --space-20: 20px;
+    --space-24: 24px;
+    --space-32: 32px;
+    --space-40: 40px;
+    --space-48: 48px;
+    
+    /* Border Radius */
+    --radius-sm: 6px;
+    --radius-base: 8px;
+    --radius-md: 10px;
+    --radius: var(--radius-base);
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px hsl(0 0% 0% / 0.08);
+    --shadow-base: 0 2px 8px hsl(0 0% 0% / 0.1);
+    --shadow-md: 0 4px 12px hsl(180 61% 33% / 0.15);
+    --shadow-lg: 0 8px 24px hsl(0 0% 0% / 0.12);
+    
+    /* Animation Timing */
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 400ms;
+    --ease-default: ease-out;
+    --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+    
+    /* Content Width Constraints */
+    --content-width-sm: 640px;
+    --content-width-md: 768px;
+    --content-width-lg: 1024px;
+    --content-width-xl: 1280px;
+    
+    --sidebar-background: var(--color-cream-100);
+    --sidebar-foreground: var(--color-slate-900);
+    --sidebar-primary: var(--color-teal-500);
+    --sidebar-primary-foreground: var(--color-white);
+    --sidebar-accent: var(--color-gray-200);
+    --sidebar-accent-foreground: var(--color-charcoal-800);
+    --sidebar-border: var(--color-gray-200);
+    --sidebar-ring: var(--color-teal-500);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    font-size: 14px; /* Base = 14px */
+    line-height: 1.5; /* 21px line height */
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: inherit;
+  }
+  
+  /* Typography Scale */
+  h1 {
+    font-size: 24px; /* 1.714rem */
+    font-weight: 600;
+    line-height: 1.2; /* 28.8px */
+    margin-bottom: var(--space-16);
+    color: hsl(var(--color-charcoal-800));
+  }
+  
+  h2 {
+    font-size: 18px; /* 1.286rem */
+    font-weight: 600;
+    line-height: 1.2; /* 21.6px */
+    margin-bottom: var(--space-16);
+    color: hsl(var(--color-charcoal-800));
+  }
+  
+  h3 {
+    font-size: 11px; /* 0.786rem */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: hsl(var(--color-text-secondary));
+    margin-bottom: var(--space-12);
+  }
+  
+  p {
+    font-size: 14px; /* Base */
+    line-height: 1.6; /* 22.4px */
+    margin-bottom: var(--space-16);
+  }
+  
+  /* Focus States */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+  
+  /* Motion Preferences */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Component Patterns */
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-primary-foreground;
+    padding: var(--space-8) var(--space-16);
+    border-radius: var(--radius-base);
+    font-weight: 500;
+    font-size: 14px;
+    transition: all var(--duration-normal) var(--ease-default);
+    cursor: pointer;
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background: hsl(var(--primary-hover));
+  }
+  
+  .btn-secondary {
+    background: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary));
+    padding: var(--space-8) var(--space-16);
+    border-radius: var(--radius-base);
+    font-weight: 500;
+    font-size: 14px;
+    transition: all var(--duration-normal) var(--ease-default);
+    cursor: pointer;
+  }
+  
+  .btn-secondary:hover {
+    background: hsl(var(--primary) / 0.2);
+  }
+  
+  .card-radiant {
+    background: hsl(var(--surface));
+    border-radius: var(--radius-md);
+    padding: var(--space-24);
+    box-shadow: var(--shadow-base);
+    transition: box-shadow var(--duration-normal);
+  }
+  
+  .card-radiant:hover {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .container-radiant {
+    max-width: var(--content-width-lg);
+    margin: 0 auto;
+    padding: 0 var(--space-16);
+  }
+  
+  .text-large {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  
+  .text-small {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  
+  .badge-radiant {
+    display: inline-block;
+    padding: var(--space-4) var(--space-8);
+    font-size: 12px;
+    font-weight: 500;
+    background: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    border-radius: var(--radius-sm);
+  }
+}

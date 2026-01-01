@@ -1,0 +1,123 @@
+{
+  "sections": [
+    {
+      "id": "01-rdx",
+      "title": "1. RDX Session",
+      "subtitle": "Foundation Layer (Logging)",
+      "content": "Session logging and tracking across agents and projects. The immutable history of the build.",
+      "fileStructure": "rdx-session/\n├── src/\n│   ├── core/\n│   │   ├── SessionManager.ts\n│   │   └── EntryLogger.ts\n│   └── types/\n│       ├── session.types.ts\n│       └── entry.types.ts",
+      "coreTypes": "// session.types.ts\ninterface Session {\n  id: string;\n  projectId: string;\n  agentId: string;\n  startTime: Date;\n  status: 'active' | 'paused' | 'complete';\n}\n\ninterface LogEntry {\n  sessionId: string;\n  timestamp: Date;\n  type: 'action' | 'decision' | 'output';\n  payload: Record<string, unknown>;\n  metadata: EntryMetadata;\n}",
+      "codePatterns": "// SessionManager.ts\nclass SessionManager {\n  private activeSessions: Map<string, Session> = new Map();\n  \n  createSession(projectId: string, agentId: string): Session {\n    const session: Session = {\n      id: generateId(),\n      projectId,\n      agentId,\n      startTime: new Date(),\n      status: 'active'\n    };\n    this.activeSessions.set(session.id, session);\n    return session;\n  }\n  \n  log(sessionId: string, entry: LogEntry): void {\n    // Immutable append-only logging\n    this.entryLogger.append(sessionId, entry);\n  }\n}",
+      "integrationPoints": [
+        "Receives session requests from all other systems",
+        "Provides session context to Lattice Sync for coordination",
+        "Exports logs for RIT/RitOps publication layer",
+        "Feeds historical data to Grindhouse for pattern analysis"
+      ]
+    },
+    {
+      "id": "02-grindhouse",
+      "title": "2. Grindhouse",
+      "subtitle": "Execution Layer",
+      "content": "Strategic planning (Dropframe) and production execution (Grindline). The engine of the system.",
+      "fileStructure": "grindhouse/\n├── dropframe/ (Research & Analysis)\n│   ├── FrameManager.ts\n│   ├── AnalysisEngine.ts\n│   └── types/\n│       └── frame.types.ts\n└── grindline/ (Production Execution)\n    ├── TaskQueue.ts\n    ├── ExecutionEngine.ts\n    └── types/\n        └── task.types.ts",
+      "coreTypes": "// frame.types.ts (Dropframe)\ninterface Frame {\n  id: string;\n  type: 'research' | 'analysis' | 'planning';\n  scope: string;\n  inputs: DataSource[];\n  outputs: Insight[];\n  status: FrameStatus;\n}\n\n// task.types.ts (Grindline)\ninterface Task {\n  id: string;\n  frameId: string; // Links to Dropframe research\n  priority: number;\n  stage: 'queued' | 'active' | 'review' | 'complete';\n  assignedAgent: string;\n  dependencies: string[];\n}",
+      "codePatterns": "// Dropframe: FrameManager.ts\nclass FrameManager {\n  createAnalysisFrame(scope: string, sources: DataSource[]): Frame {\n    const frame = {\n      id: generateId(),\n      type: 'analysis',\n      scope,\n      inputs: sources,\n      outputs: [],\n      status: 'pending'\n    };\n    \n    // Log to RDX\n    this.rdxSession.log(this.sessionId, {\n      type: 'action',\n      payload: { action: 'frame_created', frameId: frame.id }\n    });\n    \n    return frame;\n  }\n  \n  transitionToProduction(frameId: string): Task[] {\n    const frame = this.getFrame(frameId);\n    // Convert insights to executable tasks\n    return frame.outputs.map(insight => \n      this.grindline.createTask(frameId, insight)\n    );\n  }\n}\n\n// Grindline: TaskQueue.ts\nclass TaskQueue {\n  enqueue(task: Task): void {\n    this.priorityQueue.insert(task, task.priority);\n    this.latticeSync.notifyAgents('task_available', task.id);\n  }\n  \n  assignToAgent(taskId: string, agentId: string): void {\n    const task = this.getTask(taskId);\n    task.assignedAgent = agentId;\n    task.stage = 'active';\n    \n    // Update all coordination layers\n    this.rdxSession.log(this.sessionId, {\n      type: 'action',\n      payload: { taskId, agentId, stage: 'active' }\n    });\n  }\n}",
+      "integrationPoints": [
+        "Dropframe receives research triggers from VSM School (knowledge gaps)",
+        "Dropframe outputs feed Grindline task queue",
+        "Grindline coordinates with Lattice Sync for agent assignment",
+        "Both log all state changes to RDX Session",
+        "Completed tasks flow to Content Factor for processing"
+      ]
+    },
+    {
+      "id": "03-content-factor",
+      "title": "3. Content Factor",
+      "subtitle": "Pipeline Layer",
+      "content": "Modular content pipeline for creation, processing, and distribution.",
+      "fileStructure": "content-factor/\n├── src/\n│   ├── pipeline/\n│   │   ├── PipelineManager.ts\n│   │   ├── StageProcessor.ts\n│   │   └── validators/\n│   ├── stages/\n│   │   ├── creation/\n│   │   ├── refinement/\n│   │   └── distribution/\n│   └── types/\n│       ├── pipeline.types.ts\n│       └── content.types.ts",
+      "coreTypes": "// pipeline.types.ts\ninterface Pipeline {\n  id: string;\n  name: string;\n  stages: Stage[];\n  status: PipelineStatus;\n}\n\ninterface Stage {\n  id: string;\n  type: 'creation' | 'processing' | 'validation' | 'distribution';\n  processor: StageProcessor;\n  inputs: ContentArtifact[];\n  outputs: ContentArtifact[];\n}\n\ninterface ContentArtifact {\n  id: string;\n  sourceTaskId: string; // From Grindline\n  format: 'markdown' | 'html' | 'pdf' | 'video';\n  content: string | Buffer;\n  metadata: ArtifactMetadata;\n}",
+      "codePatterns": "// PipelineManager.ts\nclass PipelineManager {\n  createPipeline(config: PipelineConfig): Pipeline {\n    const pipeline: Pipeline = {\n      id: generateId(),\n      name: config.name,\n      stages: this.initializeStages(config.stages),\n      status: 'ready'\n    };\n    \n    return pipeline;\n  }\n  \n  processArtifact(pipelineId: string, artifact: ContentArtifact): void {\n    const pipeline = this.getPipeline(pipelineId);\n    let currentArtifact = artifact;\n    \n    for (const stage of pipeline.stages) {\n      // Sequential processing through stages\n      currentArtifact = stage.processor.process(currentArtifact);\n      \n      // Log progression\n      this.rdxSession.log(this.sessionId, {\n        type: 'action',\n        payload: { \n          pipelineId, \n          stageId: stage.id, \n          artifactId: currentArtifact.id \n        }\n      });\n    }\n    \n    // Final artifact ready for distribution\n    this.distributeArtifact(currentArtifact);\n  }\n}\n\n// StageProcessor.ts (example: refinement stage)\nclass RefinementProcessor implements StageProcessor {\n  process(artifact: ContentArtifact): ContentArtifact {\n    // Apply Clearline7 formatting\n    const formatted = this.clearline.format(artifact);\n    \n    // Quality validation\n    const validated = this.validateQuality(formatted);\n    \n    return {\n      ...artifact,\n      content: validated.content,\n      metadata: {\n        ...artifact.metadata,\n        refinementStage: 'complete',\n        qualityScore: validated.score\n      }\n    };\n  }\n}",
+      "integrationPoints": [
+        "Receives completed tasks from Grindline as input artifacts",
+        "Uses Clearline7 for formatting in refinement stages",
+        "Coordinates with Lattice Sync for multi-agent review processes",
+        "Outputs to VSM School for educational content",
+        "Publishes final artifacts through RIT/RitOps",
+        "Logs all stage transitions to RDX Session"
+      ]
+    },
+    {
+      "id": "04-vsm-school",
+      "title": "4. VSM School",
+      "subtitle": "Educational Output",
+      "content": "Systems thinking education with training cards and modular curriculum.",
+      "fileStructure": "vsm-school/\n├── src/\n│   ├── curriculum/\n│   │   ├── ModuleManager.ts\n│   │   ├── CardGenerator.ts\n│   │   └── ProgressTracker.ts\n│   ├── cards/\n│   │   ├── templates/\n│   │   └── validators/\n│   └── types/\n│       ├── module.types.ts\n│       ├── card.types.ts\n│       └── progress.types.ts",
+      "coreTypes": "// module.types.ts\ninterface Module {\n  id: string;\n  name: string;\n  stage: 'fabrication' | 'development' | 'strategy' | 'application' | 'mastery';\n  cards: Card[];\n  prerequisites: string[];\n  competencyIndicators: Competency[];\n}\n\n// card.types.ts\ninterface Card {\n  id: string;\n  moduleId: string;\n  title: string;\n  concept: string;\n  examples: Example[];\n  exercises: Exercise[];\n  format: CardFormat;\n}\n\n// progress.types.ts\ninterface LearnerProgress {\n  learnerId: string;\n  completedModules: string[];\n  currentModule: string;\n  competencyScores: Map<string, number>;\n}",
+      "codePatterns": "// ModuleManager.ts\nclass ModuleManager {\n  createModule(stage: ModuleStage, content: ModuleContent): Module {\n    const module: Module = {\n      id: generateId(),\n      name: content.name,\n      stage,\n      cards: [],\n      prerequisites: this.inferPrerequisites(stage),\n      competencyIndicators: content.indicators\n    };\n    \n    // Generate cards from content\n    module.cards = this.cardGenerator.generate(content);\n    \n    // Log creation\n    this.rdxSession.log(this.sessionId, {\n      type: 'output',\n      payload: { moduleId: module.id, stage, cardCount: module.cards.length }\n    });\n    \n    return module;\n  }\n  \n  identifyKnowledgeGap(learnerId: string): ResearchRequest {\n    const progress = this.getProgress(learnerId);\n    const gaps = this.analyzeGaps(progress);\n    \n    // Trigger Dropframe research\n    return {\n      type: 'knowledge_gap',\n      scope: gaps.primaryGap,\n      requestedBy: 'vsm-school',\n      targetModule: progress.currentModule\n    };\n  }\n}\n\n// CardGenerator.ts\nclass CardGenerator {\n  generate(content: ModuleContent): Card[] {\n    return content.concepts.map(concept => ({\n      id: generateId(),\n      moduleId: content.moduleId,\n      title: concept.title,\n      concept: concept.description,\n      examples: this.extractExamples(concept),\n      exercises: this.createExercises(concept),\n      format: this.applyCardFormat(concept)\n    }));\n  }\n  \n  private applyCardFormat(concept: Concept): CardFormat {\n    // Uses Clearline7 for consistent formatting\n    return this.clearline.applyTemplate('vsmCard', concept);\n  }\n}",
+      "integrationPoints": [
+        "Triggers research in Dropframe when knowledge gaps identified",
+        "Receives educational content from Content Factor pipeline",
+        "Uses Clearline7 for card formatting and visual consistency",
+        "Coordinates with Lattice Sync for multi-learner contexts",
+        "Logs all progress and completion to RDX Session",
+        "Publishes completed modules through RIT/RitOps"
+      ]
+    },
+    {
+      "id": "05-lattice-sync",
+      "title": "5. Lattice Sync",
+      "subtitle": "Coordination Layer",
+      "content": "Multi-agent coordination, context sharing, and protocol management.",
+      "fileStructure": "lattice-sync/\n├── src/\n│   ├── coordination/\n│   │   ├── AgentRegistry.ts\n│   │   ├── ContextBroker.ts\n│   │   └── ProtocolManager.ts\n│   ├── protocols/\n│   │   ├── handoff.protocol.ts\n│   │   ├── review.protocol.ts\n│   │   └── collaboration.protocol.ts\n│   └── types/\n│       ├── agent.types.ts\n│       ├── context.types.ts\n│       └── protocol.types.ts",
+      "coreTypes": "// agent.types.ts\ninterface Agent {\n  id: string;\n  name: string;\n  capabilities: Capability[];\n  status: 'available' | 'busy' | 'offline';\n  currentContext?: SharedContext;\n}\n\n// context.types.ts\ninterface SharedContext {\n  id: string;\n  scope: string;\n  participants: string[]; // Agent IDs\n  state: Record<string, unknown>;\n  history: ContextEvent[];\n  syncedAt: Date;\n}\n\n// protocol.types.ts\ninterface Protocol {\n  id: string;\n  name: string;\n  type: 'handoff' | 'review' | 'collaboration';\n  steps: ProtocolStep[];\n  participants: ProtocolRole[];\n}",
+      "codePatterns": "// AgentRegistry.ts\nclass AgentRegistry {\n  private agents: Map<string, Agent> = new Map();\n  \n  registerAgent(agent: Agent): void {\n    this.agents.set(agent.id, agent);\n    \n    // Notify all systems of new agent availability\n    this.broadcast('agent_registered', {\n      agentId: agent.id,\n      capabilities: agent.capabilities\n    });\n    \n    // Log registration\n    this.rdxSession.log(this.sessionId, {\n      type: 'action',\n      payload: { action: 'agent_registered', agentId: agent.id }\n    });\n  }\n  \n  findCapableAgent(required: Capability): Agent | null {\n    return Array.from(this.agents.values())\n      .find(agent => \n        agent.status === 'available' && \n        agent.capabilities.includes(required)\n      ) ?? null;\n  }\n}\n\n// ContextBroker.ts\nclass ContextBroker {\n  createSharedContext(scope: string, participants: string[]): SharedContext {\n    const context: SharedContext = {\n      id: generateId(),\n      scope,\n      participants,\n      state: {},\n      history: [],\n      syncedAt: new Date()\n    };\n    \n    // Initialize context for all participants\n    participants.forEach(agentId => {\n      this.syncContextToAgent(agentId, context);\n    });\n    \n    return context;\n  }\n  \n  updateContext(contextId: string, delta: Record<string, unknown>): void {\n    const context = this.getContext(contextId);\n    \n    // Merge delta into state\n    context.state = { ...context.state, ...delta };\n    context.syncedAt = new Date();\n    \n    // Record event\n    context.history.push({\n      timestamp: new Date(),\n      type: 'state_update',\n      delta\n    });\n    \n    // Sync to all participants\n    context.participants.forEach(agentId => {\n      this.syncContextToAgent(agentId, context);\n    });\n  }\n}\n\n// ProtocolManager.ts\nclass ProtocolManager {\n  executeProtocol(protocolId: string, context: SharedContext): void {\n    const protocol = this.getProtocol(protocolId);\n    \n    for (const step of protocol.steps) {\n      // Assign step to capable agent\n      const agent = this.agentRegistry.findCapableAgent(step.requiredCapability);\n      \n      if (!agent) {\n        throw new Error(`No agent available for step: ${step.name}`);\n      }\n      \n      // Execute step\n      this.executeStep(agent, step, context);\n      \n      // Log progression\n      this.rdxSession.log(this.sessionId, {\n        type: 'action',\n        payload: { \n          protocolId, \n          step: step.name, \n          agentId: agent.id \n        }\n      });\n    }\n  }\n}",
+      "integrationPoints": [
+        "Central coordination hub for all agent-to-agent communication",
+        "Provides shared context to Grindline for task assignment",
+        "Coordinates review protocols across Content Factor stages",
+        "Manages handoffs between Dropframe research and Grindline production",
+        "Enables multi-agent collaboration in VSM School learning contexts",
+        "Logs all coordination events to RDX Session",
+        "Receives agent availability updates from all systems"
+      ]
+    },
+    {
+      "id": "06-clearline-7",
+      "title": "6. Clearline7",
+      "subtitle": "Formatting Layer",
+      "content": "Google Docs formatting infrastructure and style system.",
+      "fileStructure": "clearline7/\n├── src/\n│   ├── formatters/\n│   │   ├── DocumentFormatter.ts\n│   │   ├── StyleEngine.ts\n│   │   └── TemplateRenderer.ts\n│   ├── templates/\n│   │   ├── vsmCard.template.ts\n│   │   ├── report.template.ts\n│   │   └── presentation.template.ts\n│   ├── integrations/\n│   │   └── GoogleDocsAdapter.ts\n│   └── types/\n│       ├── format.types.ts\n│       ├── style.types.ts\n│       └── template.types.ts",
+      "coreTypes": "// format.types.ts\ninterface DocumentFormat {\n  id: string;\n  name: string;\n  type: 'vsmCard' | 'report' | 'presentation' | 'manual';\n  styles: StyleDefinition[];\n  structure: DocumentStructure;\n}\n\n// style.types.ts\ninterface StyleDefinition {\n  name: string;\n  element: 'heading' | 'paragraph' | 'code' | 'list';\n  properties: CSSProperties;\n  googleDocsMapping: GoogleDocsStyle;\n}\n\n// template.types.ts\ninterface Template {\n  id: string;\n  format: DocumentFormat;\n  placeholders: Placeholder[];\n  renderFn: (data: TemplateData) => FormattedDocument;\n}",
+      "codePatterns": "// DocumentFormatter.ts\nclass DocumentFormatter {\n  format(content: string, formatId: string): FormattedDocument {\n    const format = this.getFormat(formatId);\n    \n    // Parse content into structure\n    const parsed = this.parseContent(content);\n    \n    // Apply styles\n    const styled = this.styleEngine.apply(parsed, format.styles);\n    \n    // Generate final document\n    return {\n      id: generateId(),\n      formatId,\n      content: styled,\n      metadata: {\n        formattedAt: new Date(),\n        formatVersion: format.version\n      }\n    };\n  }\n  \n  exportToGoogleDocs(doc: FormattedDocument): GoogleDocsDocument {\n    // Convert to Google Docs format\n    return this.googleDocsAdapter.convert(doc);\n  }\n}\n\n// StyleEngine.ts\nclass StyleEngine {\n  apply(content: ParsedContent, styles: StyleDefinition[]): StyledContent {\n    const styleMap = this.buildStyleMap(styles);\n    \n    return {\n      ...content,\n      elements: content.elements.map(element => ({\n        ...element,\n        style: styleMap[element.type] ?? this.getDefaultStyle(element.type)\n      }))\n    };\n  }\n  \n  private buildStyleMap(styles: StyleDefinition[]): Record<string, Style> {\n    return styles.reduce((map, def) => ({\n      ...map,\n      [def.element]: this.compileStyle(def)\n    }), {});\n  }\n}\n\n// TemplateRenderer.ts\nclass TemplateRenderer {\n  render(template: Template, data: TemplateData): FormattedDocument {\n    // Validate data against placeholders\n    this.validateData(template.placeholders, data);\n    \n    // Execute template render function\n    const rendered = template.renderFn(data);\n    \n    // Apply format styles\n    return this.documentFormatter.format(rendered.content, template.format.id);\n  }\n}",
+      "integrationPoints": [
+        "Used by Content Factor for formatting in refinement stages",
+        "Provides card formatting for VSM School modules",
+        "Formats all documentation output from Grindline",
+        "Ensures consistent styling across RIT/RitOps publications",
+        "Integrates with Google Docs API for collaborative editing",
+        "Logs formatting operations to RDX Session",
+        "Provides style definitions to all content-generating systems"
+      ]
+    },
+    {
+      "id": "07-rit-ops",
+      "title": "7. RIT / RitOps",
+      "subtitle": "Publication Layer",
+      "content": "Public presentation layer for the Radiant Seven ecosystem.",
+      "fileStructure": "rit-ops/\n├── src/\n│   ├── publication/\n│   │   ├── PublicationManager.ts\n│   │   ├── VersionControl.ts\n│   │   └── DistributionEngine.ts\n│   ├── presentation/\n│   │   ├── SiteGenerator.ts\n│   │   └── ComponentLibrary.ts\n│   ├── analytics/\n│   │   └── MetricsCollector.ts\n│   └── types/\n│       ├── publication.types.ts\n│       ├── distribution.types.ts\n│       └── metrics.types.ts",
+      "coreTypes": "// publication.types.ts\ninterface Publication {\n  id: string;\n  title: string;\n  type: 'documentation' | 'module' | 'presentation' | 'report';\n  sourceArtifactId: string; // From Content Factor\n  status: 'draft' | 'review' | 'published' | 'archived';\n  versions: PublicationVersion[];\n  distribution: DistributionConfig;\n}\n\n// distribution.types.ts\ninterface DistributionConfig {\n  channels: Channel[];\n  visibility: 'public' | 'private' | 'restricted';\n  targets: DistributionTarget[];\n}\n\ninterface DistributionTarget {\n  type: 'web' | 'pdf' | 'api' | 'rss';\n  url?: string;\n  metadata: TargetMetadata;\n}\n\n// metrics.types.ts\ninterface PublicationMetrics {\n  publicationId: string;\n  views: number;\n  downloads: number;\n  engagement: EngagementMetrics;\n  collectedAt: Date;\n}",
+      "codePatterns": "// PublicationManager.ts\nclass PublicationManager {\n  createPublication(artifact: ContentArtifact): Publication {\n    const publication: Publication = {\n      id: generateId(),\n      title: artifact.metadata.title,\n      type: this.inferType(artifact),\n      sourceArtifactId: artifact.id,\n      status: 'draft',\n      versions: [],\n      distribution: this.createDefaultDistribution(artifact)\n    };\n    \n    // Create initial version\n    this.createVersion(publication.id, artifact);\n    \n    // Log publication creation\n    this.rdxSession.log(this.sessionId, {\n      type: 'output',\n      payload: { \n        publicationId: publication.id, \n        sourceArtifactId: artifact.id \n      }\n    });\n    \n    return publication;\n  }\n  \n  publish(publicationId: string): void {\n    const publication = this.getPublication(publicationId);\n    \n    // Update status\n    publication.status = 'published';\n    \n    // Execute distribution\n    this.distributionEngine.distribute(publication);\n    \n    // Start metrics collection\n    this.metricsCollector.track(publicationId);\n    \n    // Log publication\n    this.rdxSession.log(this.sessionId, {\n      type: 'action',\n      payload: { \n        publicationId, \n        action: 'published',\n        timestamp: new Date()\n      }\n    });\n  }\n}\n\n// DistributionEngine.ts\nclass DistributionEngine {\n  distribute(publication: Publication): void {\n    for (const target of publication.distribution.targets) {\n      switch (target.type) {\n        case 'web':\n          this.publishToWeb(publication, target);\n          break;\n        case 'pdf':\n          this.generatePDF(publication, target);\n          break;\n        case 'api':\n          this.exposeViaAPI(publication, target);\n          break;\n        case 'rss':\n          this.addToFeed(publication, target);\n          break;\n      }\n      \n      // Log each distribution\n      this.rdxSession.log(this.sessionId, {\n        type: 'action',\n        payload: {\n          publicationId: publication.id,\n          targetType: target.type,\n          targetUrl: target.url\n        }\n      });\n    }\n  }\n  \n  private publishToWeb(publication: Publication, target: DistributionTarget): void {\n    // Generate site using SiteGenerator\n    const site = this.siteGenerator.generate(publication);\n    \n    // Deploy to target URL\n    this.deploy(site, target.url);\n  }\n}\n\n// SiteGenerator.ts\nclass SiteGenerator {\n  generate(publication: Publication): GeneratedSite {\n    // Use Clearline7 for consistent styling\n    const styled = this.clearline.format(\n      publication.content, \n      'webPresentation'\n    );\n    \n    // Build site structure\n    return {\n      pages: this.buildPages(styled),\n      navigation: this.buildNavigation(publication),\n      assets: this.prepareAssets(publication),\n      metadata: this.generateMetadata(publication)\n    };\n  }\n}",
+      "integrationPoints": [
+        "Receives final artifacts from Content Factor for publication",
+        "Uses Clearline7 for consistent web presentation styling",
+        "Pulls historical data from RDX Session for version tracking",
+        "Coordinates with Lattice Sync for multi-agent review before publish",
+        "Publishes VSM School modules as accessible web content",
+        "Logs all publication events and metrics to RDX Session",
+        "Provides public API endpoints for external integrations"
+      ]
+    }
+  ]
+}

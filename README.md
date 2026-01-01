@@ -1,83 +1,67 @@
-# Radiant System — The Creative and Production OS
+# Radiant System
 
-Radiant is the core of a multi-module creative framework.
-It orchestrates story development, content transformation, and high-throughput production.
+Radiant System is a **Story OS** designed to orchestrate creative workflows, blending human intent with AI-driven transformation and production modules.
 
-Radiant does not generate content.
-It **coordinates systems** that do:
+This repository is a **Monorepo** containing the unified application and shared packages.
 
-- DropFrame — the Transformation Engine  
-- Grindline — the Production Engine  
+## Structure
 
-Together, they form a unified workflow:
+```
+radiant-system/
+├── apps/
+│   └── web/              # Primary Next.js 16 Application
+│       ├── src/app/
+│       │   ├── (marketing)/  # Marketing pages (Home, About, etc.)
+│       │   ├── (docs)/       # Documentation (MDX)
+│       │   ├── manual/       # Build Order Manual
+│       │   └── studios/      # Visualizations (Triptych)
+├── packages/
+│   ├── ui/               # Shared UI Components (Shadcn + Custom)
+│   ├── types/            # Shared TypeScript Interfaces
+│   ├── config/           # Shared Configurations (ESLint, Tailwind)
+│   └── data/             # Data Loaders & Validators
+└── core/                 # Core Orchestrator Logic
+```
 
-**Intent → Transform → Produce → Publish**
+## Quick Start
 
-Radiant is the *mind* of that workflow.
+### Prerequisites
+- Node.js 18+
+- pnpm (v9 or v10)
 
----
+### Installation
 
-## 🧠 Purpose
+```bash
+pnpm install
+```
 
-The Radiant System exists to:
+### Development
 
-1. Provide a consistent structure for story development  
-2. Define contracts and schemas for AI collaboration  
-3. Serve as an orchestrator between transformation and production systems  
-4. Allow modular narrative frameworks (Save the Cat, Hero’s Journey, Seven-Point, etc.)  
-5. Provide stability and repeatability for complex creative work  
+To start the unified web application:
 
-Radiant is a “Story OS,” not a generator.
+```bash
+pnpm dev
+```
+> This runs `apps/web` on [http://localhost:3000](http://localhost:3000).
 
----
+### Building
 
-## 🏗️ Architecture Overview
+To build the entire ecosystem (apps and packages):
 
-User Intent
-↓
-Radiant OS (Orchestrator Layer)
-↓
-DropFrame (Transformation)
-↓
-Grindline (Production)
-↓
-Output Packages / Publish
+```bash
+pnpm build
+```
 
-yaml
-Copy code
+## Key Features
 
-Radiant defines **protocol**, **schemas**, and **system rules**.
-Other engines obey them.
+- **Unified Interface:** Access Marketing, Manuals, and Visualizations in one app.
+- **Radiant Protocol:** Standardized message contracts for Human-AI collaboration.
+- **Modular Architecture:** Shared UI and Logic across the system.
+- **Documentation First:** Tech specs and protocols rendered natively from MDX.
 
----
+## Contributing
 
-## 📂 Repo Structure
-
-- `docs/` — philosophy, architecture, modules
-- `specs/` — schemas, data shapes, system contracts
-- `examples/` — reference flows
-- `core/` — orchestrator logic and module adapters
-
----
-
-## 🚧 Roadmap
-
-- [ ] Define Radiant Protocol v0.1
-- [ ] Story OS schemas (beats, arcs, worlds)
-- [ ] Integration adapters for DropFrame + Grindline
-- [ ] Base orchestrator (config-driven)
-- [ ] CLI (optional future feature)
-
-Radiant grows slowly and deliberately.  
-It is the foundation of the entire system.
-
----
-
-## 📎 License
-
-Open-core. System logic belongs to the Radiant Framework.
-
-
-DropFrame (Transformation): [https://github.com/dropframe-studio/dropframe](https://github.com/dropframe-studio/dropframe)
-
-Grindline (Production):[https://github.com/dropframe-studio/grindline-studio](https://github.com/dropframe-studio/grindline-studio)
+1. Create a feature branch (`feat/your-feature`).
+2. Make changes in `apps/web` or `packages/`.
+3. Run `pnpm build` to verify integrity.
+4. Submit a PR.

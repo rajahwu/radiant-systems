@@ -1,0 +1,4 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "clearline7-monorepo/packages/*"

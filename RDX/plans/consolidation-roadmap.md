@@ -110,16 +110,16 @@ pnpm turbo lint   # All packages pass linting
 
 #### 2.1 Create Unified Next.js App
 
-- [ ] Create `apps/web/` directory
-- [ ] Initialize Next.js 16: `pnpm create next-app@latest apps/web`
-- [ ] Configure Next.js with:
+- [x] Create `apps/web/` directory
+- [x] Initialize Next.js 16: `pnpm create next-app@latest apps/web`
+- [x] Configure Next.js with:
   - TypeScript strict mode
   - App router
   - TailwindCSS
   - `@radiant/ui` import
   - `@radiant/types` import
-- [ ] Set up layout with Header/Footer from `@radiant/ui`
-- [ ] Configure environment variables
+- [x] Set up layout with Header/Footer from `@radiant/ui`
+- [x] Configure environment variables
 
 #### 2.2 Migrate radiant_systems Pages
 
@@ -135,21 +135,21 @@ apps/web/src/app/
 ```
 
 **Tasks:**
-- [ ] Create route groups: `(marketing)`, `(docs)`, `studios`, `manual`
-- [ ] Migrate `Index.tsx` → `apps/web/src/app/(marketing)/page.tsx`
-- [ ] Migrate `About.tsx` → `apps/web/src/app/(marketing)/about/page.tsx`
-- [ ] Migrate `Manifesto.tsx` → `apps/web/src/app/(marketing)/manifesto/page.tsx`
-- [ ] Migrate `CaseStudies.tsx` → `apps/web/src/app/(marketing)/case-studies/page.tsx`
-- [ ] Migrate `LearnHub.tsx` → `apps/web/src/app/(marketing)/learn/page.tsx`
-- [ ] Create `NotFound.tsx` → `apps/web/src/app/not-found.tsx`
+- [x] Create route groups: `(marketing)`, `(docs)`, `studios`, `manual`
+- [x] Migrate `Index.tsx` → `apps/web/src/app/(marketing)/page.tsx`
+- [x] Migrate `About.tsx` → `apps/web/src/app/(marketing)/about/page.tsx`
+- [x] Migrate `Manifesto.tsx` → `apps/web/src/app/(marketing)/manifesto/page.tsx`
+- [x] Migrate `CaseStudies.tsx` → `apps/web/src/app/(marketing)/case-studies/page.tsx`
+- [x] Migrate `LearnHub.tsx` → `apps/web/src/app/(marketing)/learn/page.tsx`
+- [x] Create `NotFound.tsx` → `apps/web/src/app/not-found.tsx`
 
 **Content rewrite (align with doctrine):**
-- [ ] Rewrite Index hero: "Story OS for Creative Workflows"
-- [ ] Replace features: "Coordination not Generation", "Protocol-First", "Modular Frameworks"
-- [ ] Add protocol overview section
-- [ ] Link to `/protocol` docs
-- [ ] Update About page to explain Radiant, DropFrame, Grindline
-- [ ] Update Manifesto with Radiant Protocol principles
+- [x] Rewrite Index hero: "Story OS for Creative Workflows"
+- [x] Replace features: "Coordination not Generation", "Protocol-First", "Modular Frameworks"
+- [x] Add protocol overview section
+- [x] Link to `/protocol` docs
+- [x] Update About page to explain Radiant, DropFrame, Grindline
+- [x] Update Manifesto with Radiant Protocol principles
 
 #### 2.3 Migrate radiant-manual
 
@@ -164,13 +164,13 @@ apps/web/src/app/manual/
 ```
 
 **Tasks:**
-- [ ] Create `apps/web/src/app/manual/` directory
-- [ ] Migrate `ManualViewer.tsx` → manual layout
-- [ ] Migrate section views to individual pages
-- [ ] Copy JSON data to `apps/web/public/data/manual/`
-- [ ] Update data loaders to use `@radiant/data`
-- [ ] Preserve dark theme styling
-- [ ] Add breadcrumb navigation
+- [x] Create `apps/web/src/app/manual/` directory
+- [x] Migrate `ManualViewer.tsx` → manual layout
+- [x] Migrate section views to individual pages
+- [x] Copy JSON data to `apps/web/public/data/manual/`
+- [x] Update data loaders to use `@radiant/data`
+- [x] Preserve dark theme styling
+- [x] Add breadcrumb navigation
 
 #### 2.4 Migrate StudioTriptych
 
@@ -180,11 +180,11 @@ apps/web/src/app/studios/triptych/page.tsx
 ```
 
 **Tasks:**
-- [ ] Convert inline styles to TailwindCSS classes
-- [ ] Split into reusable components (StudioCard, etc.)
-- [ ] Replace placeholder images with real assets
-- [ ] Add to main navigation
-- [ ] Link to individual studio pages
+- [x] Convert inline styles to TailwindCSS classes
+- [x] Split into reusable components (StudioCard, etc.)
+- [x] Replace placeholder images with real assets
+- [x] Add to main navigation
+- [x] Link to individual studio pages
 
 #### 2.5 Add Documentation Routes
 
@@ -198,18 +198,18 @@ apps/web/src/app/(docs)/
 ```
 
 **Tasks:**
-- [ ] Create MDX components for documentation
-- [ ] Convert `docs/*.md` to MDX pages
-- [ ] Add syntax highlighting (rehype-pretty-code)
-- [ ] Add table of contents
-- [ ] Add "Edit on GitHub" links
+- [x] Create MDX components for documentation
+- [x] Convert `docs/*.md` to MDX pages
+- [x] Add syntax highlighting (rehype-pretty-code)
+- [x] Add table of contents
+- [x] Add "Edit on GitHub" links
 
 #### 2.6 Implement Unified Features
 
-- [ ] Create shared Header with navigation to all sections
-- [ ] Create shared Footer with links
-- [ ] Add dark/light theme toggle (next-themes)
-- [ ] Set up TanStack Query provider
+- [x] Create shared Header with navigation to all sections
+- [x] Create shared Footer with links
+- [x] Add dark/light theme toggle (next-themes)
+- [x] Set up TanStack Query provider
 - [ ] Configure Supabase client (if needed)
 - [ ] Add SEO meta tags (next-seo)
 - [ ] Add Google Analytics (or privacy-respecting alternative)

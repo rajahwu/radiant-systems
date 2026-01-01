@@ -1,9 +1,13 @@
-import MANUAL_SECTIONS from "./sections-data";
+import { ManualSection } from '@/lib/types/manual.types';
 
-export default function Contents() {
+interface ContentsProps {
+  sections: ManualSection[];
+}
+
+export default function Contents({ sections }: ContentsProps) {
   return (
     <div className="max-w-6xl mx-auto px-8 py-12 space-y-24">
-      {MANUAL_SECTIONS.map((section) => (
+      {sections.map((section) => (
         <section key={section.id} id={section.id} className="group scroll-mt-32">
           {/* Section Header */}
           <div className="mb-8">

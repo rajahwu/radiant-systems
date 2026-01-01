@@ -1,0 +1,15 @@
+{
+  "sections": [
+    {
+      "id": "01-rdx",
+      "title": "1. RDX Session",
+      "subtitle": "Foundation Layer (Logging)",
+      "content": "Session logging and tracking across agents and projects. The immutable history of the build.",
+      "fileStructure": "rdx-session/\n├── src/\n│   ├── core/\n│   │   ├── SessionManager.ts\n│   │   └── EntryLogger.ts\n│   └── types/\n│       ├── session.types.ts\n│       └── entry.types.ts",
+      "integrationPoints": [
+        "Receives session requests from all other systems",
+        "Provides session context to Lattice Sync for coordination"
+      ]
+    }
+  ]
+}

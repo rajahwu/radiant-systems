@@ -1,11 +1,15 @@
-import MANUAL_SECTIONS from "./sections-data";
+import { ManualSection } from '@/lib/types/manual.types';
 
-export default function Navigation() {
+interface NavigationProps {
+  sections: ManualSection[];
+}
+
+export default function Navigation({ sections }: NavigationProps) {
   return (
     <nav className="bg-slate-900/80 border-b border-gray-800 sticky top-[140px] z-10 backdrop-blur">
       <div className="max-w-6xl mx-auto px-8 py-4">
         <div className="flex gap-2 overflow-x-auto pb-2">
-          {MANUAL_SECTIONS.map((section) => (
+          {sections.map((section) => (
             <a
               key={section.id}
               href={`#${section.id}`}

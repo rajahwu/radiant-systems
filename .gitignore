@@ -31,3 +31,23 @@ Thumbs.db
 # Temp
 tmp/
 *.tmp
+
+# Monorepo extras
+_archive/
+.claude/
+**/.turbo/
+**/.vercel/
+coverage/
+.nyc_output/
+.eslintcache
+
+# Build outputs across apps/packages
+apps/**/.next/
+apps/**/.output/
+apps/**/build/
+apps/**/dist/
+packages/**/build/
+packages/**/dist/
+
+# Logs (catch-all)
+*.log

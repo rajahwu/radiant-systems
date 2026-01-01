@@ -37,7 +37,7 @@ export default function BuildOrderView({ sections }: BuildOrderViewProps) {
             {section.fileStructure && (
               <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 hover:border-teal-500/30 transition-colors">
                 <h4 className="text-xs font-mono text-teal-400 mb-3 uppercase tracking-wider">
-                  File Structure
+                   File Structure
                 </h4>
                 <pre className="text-sm text-gray-300 font-mono overflow-x-auto">
                   {section.fileStructure}

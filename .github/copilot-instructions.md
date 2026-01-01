@@ -45,100 +45,95 @@ All inter-module communication uses the Radiant Protocol envelope ([specs/radian
 
 ### Message Flow Pattern
 - **INTENT** → Radiant interprets and routes
-- **TRANSFORM_REQUEST** → DropFrame reshapes content
-- **TRANSFORM_RESPONSE** → Returns structured nodes (scenes/beats/sections)
-- **PIPELINE_REQUEST** → Grindline executes batch operations
-- **PIPELINE_RESPONSE** → Returns multiple outputs
+## Radiant — Copilot / AI Agent Notes
 
-**Never generate content directly** — Radiant coordinates systems that do.
+Purpose: help AI coding agents be immediately productive in this repo by summarizing architecture,
+workflows, conventions, and key integration points. Keep changes minimal and preserve `core`/`specs` intent.
 
-## Development Workflows
+High-level architecture
+- Dual-codebase: `core/` (orchestrator, Node.js stubs + protocol) vs `radiant_systems/` (React + Vite UI). They are independent.
+- Protocol envelope: `specs/radiant-schema.json` is the authoritative message schema for `INTENT/TRANSFORM/PIPELINE` flows.
 
-### Web UI (`/radiant_systems`)
+Developer workflows (quick commands)
+- UI dev: `cd radiant_systems && pnpm dev` (uses `VITE_ENABLE_ROUTE_MESSAGING=true` for route logs).
+- UI checks: `pnpm build`, `pnpm lint`, `pnpm preview:dev` inside `radiant_systems`.
+- Edge functions test: `pnpm test:edge-functions` (Supabase / Deno tests in `radiant_systems/supabase`).
 
+Where to implement features
+- Orchestrator code belongs in `core/` (e.g. `core/orchestrator.js`, `core/radiant-config.js`).
+- `radiant_systems/` is the marketing/demo UI — don't conflate UI changes with protocol implementation.
+
+Repo conventions & patterns
+- Follow the Radiant Protocol in `specs/` when wiring adapters; adapters live under `core/adapters/`.
+- Use `cn()` from `radiant_systems/src/lib/utils.ts` for class merging and `shadcn/ui` components for UI primitives.
+- Routing: `radiant_systems` uses HashRouter; routes are declared in `radiant_systems/src/App.tsx`. Add new routes before the catch-all `path="*"`.
+- Image handling: `radiant_systems/vite.config.ts` contains `cdnPrefixImages` plugin — update with care.
+
+ # Radiant System — AI Agent Instructions
+
+This doc gives focused, actionable guidance for AI coding agents working in this repository.
+
+## Quick Summary
+- Dual-codebase: `core/` = orchestrator and adapters; `radiant_systems/` = React + Vite demo UI. They are independent.
+- Protocol-first: `specs/radiant-schema.json` is the single source of truth for inter-component messages.
+
+## Architecture & Why It Matters
+- `core/`: implement orchestrator logic, protocol adapters, and server-side integrations (e.g. `core/orchestrator.js`, `core/radiant-config.js`).
+- `core/adapters/`: adapters for DropFrame and Grindline — add new adapters here when wiring external systems.
+- `radiant_systems/`: marketing/demo UI (React + TypeScript). UI changes should not implement orchestration logic.
+
+## Important Files / Integration Points
+- Message schema: `specs/radiant-schema.json` (validate new message types here).
+- Example flows: `examples/pipeline-example.md`, `examples/story-transform-flow.md`.
+- Router proxy: `radiant_systems/src/lib/react-router-dom-proxy.tsx` (used across UI routes).
+- UI utils: `radiant_systems/src/lib/utils.ts` (includes `cn()` used widely).
+- Vite image plugin: `radiant_systems/vite.config.ts` (`cdnPrefixImages`) — update carefully.
+
+## Developer Workflows (practical commands)
+Run UI dev server (recommended):
 ```bash
 cd radiant_systems
-pnpm dev              # Dev server with VITE_ENABLE_ROUTE_MESSAGING=true
-pnpm build            # Production build
-pnpm build:dev        # Dev build with sourcemaps
-pnpm lint             # ESLint check
-pnpm preview:dev      # Build dev + preview
-pnpm test:edge-functions  # Test Supabase edge functions (uses Deno)
+pnpm install
+VITE_ENABLE_ROUTE_MESSAGING=true pnpm dev
+```
+Build / lint / preview:
+```bash
+cd radiant_systems
+pnpm build
+pnpm lint
+pnpm preview:dev
+```
+Edge function tests (Supabase / Deno):
+```bash
+cd radiant_systems
+pnpm test:edge-functions
 ```
 
-**Route Messaging**: The `VITE_ENABLE_ROUTE_MESSAGING` env var enables route transition logging in dev/debug builds.
+## Project-Specific Conventions
+- Core vs UI separation: implement protocol, adapters, and production logic in `core/`. Treat `radiant_systems/` as a demo surface.
+- Protocol validation: add or change message shapes only after updating `specs/radiant-schema.json` and relevant examples.
+- Do not generate final creative content inside Radiant; implement transformers/adapters that accept/emit the protocol envelope.
 
-### Core Orchestrator
-- Currently documentation-driven (implementation pending per [TODO.md](TODO.md))
-- Files in `/core` are empty stubs with JSDoc headers
-- Focus on `/docs` and `/specs` for protocol design
-- When implementing: follow adapter pattern in `core/adapters/`
+## Guidance for Making Changes
+- Adding a new adapter:
+   - Create `core/adapters/<your>-adapter.js` mirroring `dropframe-adapter.js` and `grindline-adapter.js`.
+   - Validate all messages against `specs/radiant-schema.json` before emitting.
+- Adding routes/UI elements:
+   - Update `radiant_systems/src/App.tsx` before the catch-all route and use `react-router-dom-proxy.tsx` where appropriate.
+- Updating message contract:
+   - Update `specs/radiant-schema.json`, update `examples/`, and add a small adapter/test in `core/adapters/` to demonstrate the change.
 
-## Key Conventions
-
-### Story Frameworks
-Radiant supports modular narrative structures (Save the Cat, Hero's Journey, etc.). Future implementations go in `docs/story-frameworks/`.
-
-### Schema Nodes
-Three core node types ([specs/radiant-schema.json](specs/radiant-schema.json)):
-- **scene** — location, time, characters, beat_ref
-- **beat** — framework, slot references
-- **doc-section** — order metadata
-
-### Integration Specs
-- [specs/dropframe-integration.md](specs/dropframe-integration.md) — Transform modes: scene, beat, structure, rewrite
-- [specs/grindline-integration.md](specs/grindline-integration.md) — Pipelines: story-batch, content-batch, custom
-- [specs/message-contracts.md](specs/message-contracts.md) — Empty (awaiting implementation)
-- [specs/data-shapes.md](specs/data-shapes.md) — Node type definitions
-
-## Web UI Patterns
-
-### Routing (⚠️ Known Issue)
-Uses HashRouter. Page components exist (Manifesto, LearnHub, CaseStudies, About) but routes aren't registered in [radiant_systems/src/App.tsx](radiant_systems/src/App.tsx).
-
-**To add routes**: Insert between `path="/"` and catch-all `path="*"`:
-```tsx
-<Route path="/" element={<Index />} />
-<Route path="/manifesto" element={<Manifesto />} />
-<Route path="/learn" element={<LearnHub />} />
-<Route path="/case-studies" element={<CaseStudies />} />
-<Route path="/about" element={<About />} />
-{/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-<Route path="*" element={<NotFound />} />
+## Short Message Envelope Example
+Message envelope (use this when wiring adapters):
+```json
+{"id":"uuid","version":"radiant-protocol-v0.1","type":"INTENT","timestamp":"2025-12-31T00:00:00Z","payload":{},"meta":{"source":"dropframe"}}
 ```
 
-### Styling
-- Tailwind CSS with custom config
-- shadcn/ui components in `src/components/ui/` (full suite installed)
-- Use `cn()` from [src/lib/utils.ts](radiant_systems/src/lib/utils.ts) for className merging
-- React Router proxied through [src/lib/react-router-dom-proxy.tsx](radiant_systems/src/lib/react-router-dom-proxy.tsx)
+## Tips & What Not To Do
+- Do: Write small, spec-aligned adapters and unit-tests that validate envelope shapes.
+- Don't: Implement orchestration logic in `radiant_systems/` or generate final story content; Radiant coordinates other systems.
 
-### Image CDN Plugin
-Custom Vite plugin (`cdnPrefixImages`) in [vite.config.ts](radiant_systems/vite.config.ts):
-- Scans `public/images/` at build time
-- Rewrites references to `CDN_IMG_PREFIX` env var in production
-- Handles JSX attributes, string literals, template literals, CSS `url()`
-- Uses Babel AST parsing for accurate JS/TS rewriting
+## Where to Look First
+- Read `docs/architecture.md`, `specs/radiant-schema.json`, and `core/adapters/*` when starting a task.
 
-## Design Philosophy
-
-From [docs/architecture.md](docs/architecture.md), Radiant solves:
-- Story drift and structural inconsistency
-- Over-generation and lack of cohesion
-- AI model refusal patterns
-- Multi-agent workflow fragmentation
-
-**Radiant is the single source of truth** — deliberate, minimal, extensible.
-
-## Current Implementation Status
-
-- ✅ Protocol design (v0.1) complete
-- ✅ Schema definitions finalized
-- ✅ Web UI functional with marketing pages
-- ⚠️ Web UI routes not wired (see Routing section)
-- ⚠️ Core orchestrator pending (files exist but are empty)
-- ⚠️ DropFrame/Grindline adapters pending (stub validators at lines 44-50)
-
-**Next Priority**: Implement `/core/orchestrator.js`, `/core/radiant-config.js`, and complete adapter HTTP transport layers (see [TODO.md](TODO.md) for full task list).
-
-When adding orchestrator logic, implement in `/core` following the protocol in `/specs`.
+If any section is unclear or you'd like short examples (adapter scaffold, schema validation snippet, or a sample test), say which one and I'll add it.

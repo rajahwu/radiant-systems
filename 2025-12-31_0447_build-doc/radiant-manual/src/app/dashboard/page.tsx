@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 // import { Card, Heading } from '@clearline7/components';
+
 const Card = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => {
   return <div className={`rounded-lg shadow-md p-6 bg-charcoal-800 ${className}`}>{children}</div>
 }

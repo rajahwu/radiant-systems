@@ -2,138 +2,220 @@
 
 ## Project Overview
 
-Radiant is a **Story OS** and orchestrator, not a content generator. It coordinates:
-- **DropFrame** (Transformation Engine) — restructures/refactors existing content
-- **Grindline** (Production Engine) — batch production and pipeline execution
+This workspace contains a **multi-repository ecosystem** for story orchestration, document styling, and ritual-based workflows within the Radiant Systems monorepo:
 
-The system defines schemas, protocols, and coordination rules for creative workflows following: `Intent → Transform → Produce → Publish`
+- **radiant-systems/** (current): Unified Turborepo monorepo (Story OS orchestrator + embedded product monorepos)
+  - **apps/**: Runnable applications (web, clearline7, vsm-web, sipc-lore, rsys-web)
+  - **packages/**: Shared workspace libraries (ui, types, config, data, ritual-brand components)
+  - **rco-intra/**: Radiant Protocol orchestrator specifications
 
-## Architecture
+**Core Philosophy**: Protocol-first coordination, Design-as-Data, Sovereignty (observe and preserve, never impose).
 
-### Dual-Codebase Structure
+## Architecture Fundamentals
 
-This repo contains two independent systems:
+### radiant-systems/ — Story OS & Product Suite
 
-1. **Core Orchestrator** (`/core`, `/docs`, `/specs`, `/examples`)
-   - Node.js-based (files are placeholders, mostly empty)
-   - Defines Radiant Protocol v0.1
-   - Contains documentation, schemas, integration specs
-   - **Status**: Documentation complete, implementation pending
+**Turborepo monorepo** with dual-codebase structure:
 
-2. **Web UI** (`/radiant_systems`)
-   - React + TypeScript + Vite + shadcn/ui
-   - Marketing/demo site, NOT the orchestrator implementation
-   - Uses HashRouter, TanStack Query, Supabase integration
-   - **Status**: Functional but routes not fully wired
+1. **Core Orchestrator** (`rco-intra/core/`, `rco-intra/docs/`, `rco-intra/specs/`)
+   - Node.js stubs + protocol definitions (implementation pending)
+   - Radiant Protocol v0.1 envelope schema: [rco-intra/specs/radiant-schema.json](rco-intra/specs/radiant-schema.json)
+   - Message types: `INTENT`, `TRANSFORM_REQUEST`, `TRANSFORM_RESPONSE`, `PIPELINE_REQUEST`, `PIPELINE_RESPONSE`, `ERROR`
+   - **Status**: Documentation complete, `orchestrator.js` and `radiant-config.js` are empty stubs
 
-**Critical**: These are independent systems. Changes to the web UI don't affect core orchestration logic.
+2. **apps/web** — Primary Next.js 16 Application
+   - Marketing, docs (MDX), manuals, visualizations
+   - Tech: React 19, Next.js 16, Tailwind 4
+   - Dev: `pnpm dev` (runs on localhost:3000)
 
-## Protocol & Data Contracts
+3. **apps/products/** — Embedded product monorepos:
+   - **clearline7/**: Document styling system (7 opinionated style sets)
+   - **vsm-web/**: VSM training system (React 18, Vite, shadcn/ui)
+   - **vrdev-web-port/**: Legacy VR portfolio
 
-All inter-module communication uses the Radiant Protocol envelope ([specs/radiant-schema.json](specs/radiant-schema.json)):
+4. **packages/** — Shared workspace packages:
+   - `ui/`: shadcn/ui components + custom components
+   - `types/`: Shared TypeScript interfaces
+   - `config/`: ESLint, Tailwind configs
+   - `data/`: Data loaders & validators
 
-```json
-{
-  "id": "uuid",
-  "version": "radiant-protocol-v0.1",
-  "type": "INTENT | TRANSFORM_REQUEST | TRANSFORM_RESPONSE | PIPELINE_REQUEST | PIPELINE_RESPONSE | ERROR",
-  "timestamp": "ISO-8601",
-  "payload": {},
-  "meta": { "source": "radiant | dropframe | grindline | other" }
-}
-```
+### rd7xt/VRIT-React/ — Ritual React (Design Token Pipeline) [LEGACY/EXTERNAL]
 
-### Message Flow Pattern
-- **INTENT** → Radiant interprets and routes
-## Radiant — Copilot / AI Agent Notes
+*Note: This reference is preserved for historical context. Ritual design tokens and components are now integrated into `packages/` within the radiant-systems monorepo.*
 
-Purpose: help AI coding agents be immediately productive in this repo by summarizing architecture,
-workflows, conventions, and key integration points. Keep changes minimal and preserve `core`/`specs` intent.
+- **Design tokens** → Located in `packages/` ritual-related packages
+- **Ritual React components** → Located in `packages/ritual-ui/` and similar
+- **Critical**: Edit tokens in design-source → rebuild ritual-brand → changes propagate to apps
 
-High-level architecture
-- Dual-codebase: `core/` (orchestrator, Node.js stubs + protocol) vs `radiant_systems/` (React + Vite UI). They are independent.
-- Protocol envelope: `specs/radiant-schema.json` is the authoritative message schema for `INTENT/TRANSFORM/PIPELINE` flows.
+### style-system/ — Sovereign Style Intelligence
 
-Developer workflows (quick commands)
-- UI dev: `cd radiant_systems && pnpm dev` (uses `VITE_ENABLE_ROUTE_MESSAGING=true` for route logs).
-- UI checks: `pnpm build`, `pnpm lint`, `pnpm preview:dev` inside `radiant_systems`.
-- Edge functions test: `pnpm test:edge-functions` (Supabase / Deno tests in `radiant_systems/supabase`).
+Non-prescriptive introspection system:
 
-Where to implement features
-- Orchestrator code belongs in `core/` (e.g. `core/orchestrator.js`, `core/radiant-config.js`).
-- `radiant_systems/` is the marketing/demo UI — don't conflate UI changes with protocol implementation.
+- **manifests/**: Raw inventory JSONs (clearline7, vsm-school, etc.)
+- **reports/**: Analysis and suggestions
+- **schema/**: `manifest.schema.json`, `udl-ingest.schema.json`
+- **agents/repo-style-scan/**: Automated scanners
 
-Repo conventions & patterns
-- Follow the Radiant Protocol in `specs/` when wiring adapters; adapters live under `core/adapters/`.
-- Use `cn()` from `radiant_systems/src/lib/utils.ts` for class merging and `shadcn/ui` components for UI primitives.
-- Routing: `radiant_systems` uses HashRouter; routes are declared in `radiant_systems/src/App.tsx`. Add new routes before the catch-all `path="*"`.
-- Image handling: `radiant_systems/vite.config.ts` contains `cdnPrefixImages` plugin — update with care.
+## Developer Workflows
 
- # Radiant System — AI Agent Instructions
+### radiant-systems/
 
-This doc gives focused, actionable guidance for AI coding agents working in this repository.
-
-## Quick Summary
-- Dual-codebase: `core/` = orchestrator and adapters; `radiant_systems/` = React + Vite demo UI. They are independent.
-- Protocol-first: `specs/radiant-schema.json` is the single source of truth for inter-component messages.
-
-## Architecture & Why It Matters
-- `core/`: implement orchestrator logic, protocol adapters, and server-side integrations (e.g. `core/orchestrator.js`, `core/radiant-config.js`).
-- `core/adapters/`: adapters for DropFrame and Grindline — add new adapters here when wiring external systems.
-- `radiant_systems/`: marketing/demo UI (React + TypeScript). UI changes should not implement orchestration logic.
-
-## Important Files / Integration Points
-- Message schema: `specs/radiant-schema.json` (validate new message types here).
-- Example flows: `examples/pipeline-example.md`, `examples/story-transform-flow.md`.
-- Router proxy: `radiant_systems/src/lib/react-router-dom-proxy.tsx` (used across UI routes).
-- UI utils: `radiant_systems/src/lib/utils.ts` (includes `cn()` used widely).
-- Vite image plugin: `radiant_systems/vite.config.ts` (`cdnPrefixImages`) — update carefully.
-
-## Developer Workflows (practical commands)
-Run UI dev server (recommended):
 ```bash
-cd radiant_systems
+# Root-level (uses Turbo)
 pnpm install
-VITE_ENABLE_ROUTE_MESSAGING=true pnpm dev
+pnpm dev          # Runs all apps/packages
+pnpm build        # Builds entire monorepo
+pnpm lint         # Lints all packages
+
+# Specific apps
+cd apps/web && pnpm dev
+cd apps/products/clearline7 && pnpm dev:guide
+cd apps/products/vsm-web && pnpm dev
 ```
-Build / lint / preview:
+
+### rd7xt/VRIT-React/
+
 ```bash
-cd radiant_systems
-pnpm build
-pnpm lint
-pnpm preview:dev
+# ALWAYS build tokens first after editing design-source/
+# (Note: Actual build commands depend on current workspace package structure)
+pnpm --filter ritual-brand build    # Compiles tokens → CSS
+pnpm --filter ritual-ui build
+pnpm build                          # Build all packages
 ```
-Edge function tests (Supabase / Deno):
+
+## Critical Conventions
+
+### Component Patterns (shadcn/ui ecosystem)
+
+- **Import utilities**: `import { cn } from "@/lib/utils"` (clsx + tailwind-merge)
+- **Component structure** (ClearLine7 pattern):
+  ```
+  ComponentName/
+  ├── index.ts              # Barrel export
+  ├── ComponentName.tsx     # Main logic
+  ├── style.css            # Component styles
+  ├── motion.ts            # Animations
+  ├── ComponentName.test.tsx
+  └── readme.md
+  ```
+- **Use Radix UI primitives** via shadcn/ui (Sidebar, Sheet, Dialog, etc.)
+- **Testing**: Vitest for unit tests (see `clearline7/packages/theme/src/useSetDefinitionCSS.test.tsx`)
+
+### Design Token Systems
+
+1. **ClearLine7**: SetDefinition classes → CSS variables → Tailwind
+   - 7 editions: Federal Flow, Tech Docs, Clerk Room, Blog Posts, Clerical Office Pro, Wiki Guidelines, Clearline7
+   - Usage: `<SetDefinitionProvider setDefinition={Clearline7}>`
+   - Location: [apps/products/clearline7/packages/set-definitions/](apps/products/clearline7/packages/set-definitions/)
+
+2. **Ritual React**: Design tokens + components
+   - Design tokens are compiled → CSS variables → Tailwind
+   - **Always rebuild ritual-brand after editing design tokens**
+
+### Protocol & Messaging (Radiant Core)
+
+- All adapters emit/consume Radiant Protocol envelopes
+- Adapter location: `rco-intra/core/adapters/`
+- Example adapters: `dropframe-adapter.js`, `grindline-adapter.js` (currently stubs)
+- Envelope format: `{"id":"uuid","version":"radiant-protocol-v0.1","type":"INTENT","timestamp":"ISO-8601","payload":{},"meta":{"source":"..."}}`
+- **Never hardcode workflows** — implement transformers that accept/emit envelopes
+
+### Routing
+
+- **apps/web**: Next.js 16 App Router (`src/app/`)
+- **VSM apps**: React Router with BrowserRouter
+- **ClearLine7 apps**: React Router with BrowserRouter
+- **Archived radiant_systems**: HashRouter (legacy)
+
+## Where to Implement Features
+
+| Feature Type | Location | Example |
+|--------------|----------|---------|
+| Radiant orchestrator logic | `rco-intra/core/` | `orchestrator.js`, `radiant-config.js` |
+| Protocol adapters | `rco-intra/core/adapters/` | `dropframe-adapter.js` |
+| Next.js pages/components | `apps/web/src/` | `app/(marketing)/page.tsx` |
+| Shared UI components | `packages/ui/src/` | `sidebar.tsx`, `button.tsx` |
+| ClearLine7 doc components | `apps/products/clearline7/packages/components/` | `document/Heading/` |
+| VSM training features | `apps/products/vsm-web/apps/vsm-school-web/` | `src/components/` |
+| Ritual design tokens | `rd7xt/VRIT-React/design-source/TOKENS_SOURCE/` | `phases.json` |
+| Ritual UI components | `rd7xt/VRIT-React/packages/ritual-ui/` | Component library |
+| Style analysis | `style-system/reports/` | Analysis markdown |
+
+## Key Integration Points
+
+- **Radiant Protocol schema**: [rco-intra/specs/radiant-schema.json](rco-intra/specs/radiant-schema.json)
+- **Manual data loading**: `apps/web/src/lib/loaders/json-loader.ts`
+- **ClearLine7 theme**: `packages/theme/src/SetDefinitionProvider.tsx`
+- **Ritual sound hooks**: `packages/gttm/mission/src/components/CardRitual.tsx` (useRitualSound)
+- **Style manifests**: `style-system/manifests/*.json` (UDL ingestion)
+- **cn() utility**: Used everywhere for className merging (clsx + tailwind-merge)
+
+## Common Tasks
+
+### Adding a Radiant adapter
+
+1. Create `rco-intra/core/adapters/your-adapter.js`
+2. Implement envelope validation (ref: `specs/radiant-schema.json`)
+3. Add tests and example in `examples/`
+
+### Adding a ClearLine7 component
+
+1. Create `apps/products/clearline7/packages/components/src/document/YourComponent/`
+2. Follow structure: `index.ts`, `YourComponent.tsx`, `style.css`, `motion.ts`, readme
+3. Export from `packages/components/src/document/index.ts`
+4. Add specimen page in `apps/preview/src/pages/components/`
+
+### Modifying Ritual phases
+
+1. Edit `rd7xt/VRIT-React/design-source/TOKENS_SOURCE/phases.json`
+2. Rebuild: `pnpm --filter @gttm/ritual-brand build`
+3. Verify CSS in `packages/ritual-brand/dist/ritual.css`
+
+### Adding shared UI to packages/ui/
+
+1. Extract from `apps/web/src/components/` or archived `_archive/radiant_systems/src/components/ui/`
+2. Update `packages/ui/src/components/`
+3. Update package.json exports
+
+## What NOT To Do
+
+- ❌ Don't implement orchestration logic in Next.js apps — use `rco-intra/core/`
+- ❌ Don't hardcode phase colors/durations in Ritual components — use `design-source/TOKENS_SOURCE/`
+- ❌ Don't add React code to `design-source/` — tokens and assets only
+- ❌ Don't generate creative content in Radiant — it coordinates, doesn't create
+- ❌ Don't modify style-system manifests manually — agents generate them
+- ❌ Don't conflate `_archive/radiant_systems/` (archived Vite app) with `apps/web/` (active Next.js app)
+
+## Status & Priorities
+
+**Top priorities** (from rdx/TODO.md):
+1. Implement `rco-intra/core/orchestrator.js` and `radiant-config.js`
+2. Complete adapter implementations with real transport layer
+3. Extract shared UI components to `packages/ui/`
+4. Write missing docs: `overview.md`, `story-os.md`, `modules.md`, `philosophy.md`
+
+**Known issues**:
+- Core orchestrator is empty (stubs only)
+- Component duplication between apps (migration in progress)
+- Routes not fully wired in archived `radiant_systems/`
+
+## Quick Reference
+
 ```bash
-cd radiant_systems
-pnpm test:edge-functions
+# Common commands
+pnpm dev                                      # Run everything (from radiant-systems/)
+pnpm --filter @clearline7/set-definitions build   # Build specific package
+pnpm --filter hub dev                         # Run Ritual hub
+turbo build                                   # Build with cache
+
+# Testing
+pnpm test                                     # Run all tests
+pnpm test:coverage                            # With coverage
+
+# Checking errors
+pnpm build                                    # Compile-time checks
 ```
 
-## Project-Specific Conventions
-- Core vs UI separation: implement protocol, adapters, and production logic in `core/`. Treat `radiant_systems/` as a demo surface.
-- Protocol validation: add or change message shapes only after updating `specs/radiant-schema.json` and relevant examples.
-- Do not generate final creative content inside Radiant; implement transformers/adapters that accept/emit the protocol envelope.
+---
 
-## Guidance for Making Changes
-- Adding a new adapter:
-   - Create `core/adapters/<your>-adapter.js` mirroring `dropframe-adapter.js` and `grindline-adapter.js`.
-   - Validate all messages against `specs/radiant-schema.json` before emitting.
-- Adding routes/UI elements:
-   - Update `radiant_systems/src/App.tsx` before the catch-all route and use `react-router-dom-proxy.tsx` where appropriate.
-- Updating message contract:
-   - Update `specs/radiant-schema.json`, update `examples/`, and add a small adapter/test in `core/adapters/` to demonstrate the change.
-
-## Short Message Envelope Example
-Message envelope (use this when wiring adapters):
-```json
-{"id":"uuid","version":"radiant-protocol-v0.1","type":"INTENT","timestamp":"2025-12-31T00:00:00Z","payload":{},"meta":{"source":"dropframe"}}
-```
-
-## Tips & What Not To Do
-- Do: Write small, spec-aligned adapters and unit-tests that validate envelope shapes.
-- Don't: Implement orchestration logic in `radiant_systems/` or generate final story content; Radiant coordinates other systems.
-
-## Where to Look First
-- Read `docs/architecture.md`, `specs/radiant-schema.json`, and `core/adapters/*` when starting a task.
-
-If any section is unclear or you'd like short examples (adapter scaffold, schema validation snippet, or a sample test), say which one and I'll add it.
+*For detailed architecture: [README.md](README.md), [rd7xt/VRIT-React/context.md](../rd7xt/VRIT-React/context.md), [style-system/README.md](../style-system/README.md)*

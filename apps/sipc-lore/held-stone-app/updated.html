@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stone Withering Light: Volume 6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --color-bg-dark: #0a0e1a;
+            --color-bg-medium: #1a1f2e;
+            --color-text-primary: #f5f5f5;
+            --color-accent-gold: #d4a574;
+        }
+        body {
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-primary);
+            font-family: -apple-system, sans-serif;
+            line-height: 1.6;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; }
+        .header { padding: 20px 0; border-bottom: 1px solid var(--color-accent-gold); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .progress-bar { width: 100%; height: 4px; background: #333; margin-top: 10px; }
+        #progressFill { height: 100%; background: var(--color-accent-gold); width: 0%; transition: width 0.3s; }
+        .page { display: none; animation: fadeIn 0.5s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .opener { font-style: italic; color: var(--color-accent-gold); font-size: 1.2rem; margin-bottom: 20px; }
+        .content { margin-bottom: 30px; font-size: 1.1rem; }
+        .ritual-box { background: var(--color-bg-medium); border-left: 4px solid var(--color-accent-gold); padding: 20px; margin-top: 20px; }
+        .controls { margin-top: auto; padding: 40px 0; display: flex; justify-content: space-between; }
+        button { background: transparent; border: 1px solid var(--color-accent-gold); color: white; padding: 10px 20px; cursor: pointer; }
+        button:disabled { border-color: #333; color: #333; }
+        .ship-btn { background: var(--color-accent-gold); color: var(--color-bg-dark); font-weight: bold; }
+        audio { display: none; }
+    </style>
+</head>
+<body>
+    <audio id="systemVoice" src="boy and his stones.mp3" loop></audio>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Volume 6: Stone Withering Light</h1>
+                <div class="progress-bar"><div id="progressFill"></div></div>
+            </div>
+            <button onclick="toggleAudio()" id="audioBtn">🔈 PLAY FREQUENCY</button>
+        </div>
+
+        <div id="pageContainer"></div>
+
+        <div class="controls">
+            <button id="prevBtn" onclick="previousPage()">← BACK</button>
+            <span id="pageCounter">Page <span id="currentPage">1</span> / 4</span>
+            <button id="nextBtn" onclick="nextPage()">NEXT →</button>
+        </div>
+    </div>
+
+    <script>
+        const pages = [
+            {
+                title: "I. PRELUDE: The Invitation",
+                opener: "Every fracture carries the light that wants to emerge.",
+                content: "You are not entering a space of damage; you are entering a space of potential. The Rajahwu system begins where the mirror breaks. Here, we stop reflecting chaos and begin catching material.",
+                ritual: "<strong>RITUAL:</strong> Hold a physical object in your hand. Feel its weight. This is your 'Held Stone' for the session.",
+                isLast: false
+            },
+            {
+                title: "II. THE FRACTURE: The Input",
+                opener: "In every crack, the possibility of shape-shifting resides.",
+                content: "The strike is not the end of the story; it is the delivery of raw material. We do not deny the violence of the strike; we deny it the authority to define our direction. The fracture is simply the opening where building begins.",
+                ritual: "<strong>RITUAL:</strong> Place your object on the table. Imagine the energy of a recent 'strike' flowing into that object instead of your heart.",
+                isLast: false
+            },
+            {
+                title: "III. COHESION: The Transduction",
+                opener: "Notice the patterns forming from what once seemed like chaos.",
+                content: "Cohesion is the precise application of Creative Dexterity. You are performing energy transduction: taking the kinetic shock of the 'strike' and converting it into the potential energy of a 'wall'.",
+                ritual: "<strong>RITUAL:</strong> Trace a circle around your object with your finger. Define the boundary where the attack ends and the building begins.",
+                isLast: false
+            },
+            {
+                title: "IV. THE CROWN: The Emergence",
+                opener: "Even fractured stones can hold the weight of a crown.",
+                content: "The resource is defined by the hand that holds it. When we are silent, the work will cry out. The structure is now level. You have moved from being a target to being a witness.",
+                ritual: "<strong>RITUAL:</strong> Stand the object up. It is no longer a stone; it is a standard. It is the witness to your choice to build.",
+                isLast: true
+            }
+        ];
+
+        let currentPageIndex = 0;
+        const audio = document.getElementById('systemVoice');
+
+        function renderPages() {
+            const container = document.getElementById('pageContainer');
+            container.innerHTML = pages.map((page, index) => `
+                <div class="page ${index === 0 ? 'active' : ''}" id="page-${index}">
+                    <h2>${page.title}</h2>
+                    <p class="opener">${page.opener}</p>
+                    <div class="content">${page.content}</div>
+                    <div class="ritual-box">${page.ritual}</div>
+                    ${page.isLast ? '<br><button class="ship-btn" onclick="shipCard()">MARK AS READY (SHIP)</button>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function showPage(index) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${index}`).classList.add('active');
+            currentPageIndex = index;
+            
+            document.getElementById('currentPage').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === pages.length - 1;
+            
+            const progress = ((index + 1) / pages.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function nextPage() { if (currentPageIndex < pages.length - 1) showPage(currentPageIndex + 1); }
+        function previousPage() { if (currentPageIndex > 0) showPage(currentPageIndex - 1); }
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('audioBtn').textContent = "🔊 FREQUENCY ON";
+            } else {
+                audio.pause();
+                document.getElementById('audioBtn').textContent = "🔈 PLAY FREQUENCY";
+            }
+        }
+
+        function shipCard() {
+            alert("SYSTEM LOG: Volume 6 Card Locked. Small artifact created. You are now a Builder.");
+        }
+
+        renderPages();
+    </script>
+</body>
+</html>

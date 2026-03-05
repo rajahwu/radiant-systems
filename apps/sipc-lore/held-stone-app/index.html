@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stone Withering Light: Volume 6</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg-dark: #0a0e1a;
+            --color-bg-medium: #1a1f2e;
+            --color-bg-light: #2a3142;
+            --color-text-primary: #f5f5f5;
+            --color-text-secondary: #cbd5e1;
+            --color-accent-gold: #d4a574;
+            --color-accent-light: #e8dcc4;
+            --color-stone: #8b8b7a;
+        }
+
+        body {
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1f2e 0%, #2a3142 100%);
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(212, 165, 116, 0.2);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-accent-gold);
+            letter-spacing: 0.05em;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+        }
+
+        .page-container {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page {
+            background-color: var(--color-bg-medium);
+            border: 1px solid rgba(212, 165, 116, 0.1);
+            border-radius: 8px;
+            padding: 2rem;
+            display: none;
+            flex-direction: column;
+            gap: 1.5rem;
+            min-height: 600px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: flex;
+            border-color: rgba(212, 165, 116, 0.4);
+            box-shadow: 0 0 16px rgba(212, 165, 116, 0.15);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .page-number {
+            font-size: 0.85rem;
+            color: var(--color-accent-gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--color-accent-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .visual-description {
+            font-size: 0.9rem;
+            color: var(--color-stone);
+            font-style: italic;
+            padding: 1rem;
+            background-color: rgba(212, 165, 116, 0.05);
+            border-left: 3px solid rgba(212, 165, 116, 0.2);
+            margin: 0.5rem 0;
+        }
+
+        .page-content {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--color-text-secondary);
+            margin: 1rem 0;
+        }
+
+        .page-content strong {
+            color: var(--color-accent-light);
+        }
+
+        .interactive-prompt {
+            background-color: rgba(232, 220, 196, 0.08);
+            border-left: 3px solid var(--color-accent-light);
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+        }
+
+        .interactive-prompt strong {
+            color: var(--color-accent-light);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+            padding: 1.5rem;
+            background-color: var(--color-bg-light);
+            border-radius: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--color-accent-gold);
+            color: var(--color-bg-dark);
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--color-accent-light);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .button-secondary {
+            background-color: transparent;
+            color: var(--color-accent-gold);
+            border: 1px solid var(--color-accent-gold);
+        }
+
+        .button-secondary:hover {
+            background-color: rgba(212, 165, 116, 0.1);
+            color: var(--color-accent-light);
+            border-color: var(--color-accent-light);
+        }
+
+        .page-indicator {
+            text-align: center;
+            color: var(--color-stone);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .page-indicator span {
+            color: var(--color-accent-gold);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--color-bg-light);
+            border-radius: 2px;
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-accent-gold), var(--color-accent-light));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .page-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .page {
+                padding: 1.5rem;
+                min-height: auto;
+            }
+
+            .page-title {
+                font-size: 1.4rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Stone Withering Light</h1>
+            <p>Volume 6: The Shippable Path from Fracture to Crown</p>
+        </div>
+
+        <div class="page-container" id="pageContainer">
+            <!-- Pages will be inserted here -->
+        </div>
+
+        <div class="controls">
+            <button onclick="previousPage()" id="prevBtn">← Previous</button>
+            <button class="button-secondary" onclick="toggleGuide()">Guide Mode</button>
+            <button onclick="nextPage()" id="nextBtn">Next →</button>
+        </div>
+
+        <div class="page-indicator">
+            Page <span id="currentPage">1</span> of <span id="totalPages">7</span>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <script>
+        const pages = [
+            {
+                number: 1,
+                title: "Prelude – The Invitation",
+                visual: "A faint, fractured rock on a soft white background with swirling shadow lines barely touching a floating crown.",
+                content: "Every fracture carries the light that wants to emerge. You are not entering a space of damage; you are entering a space of potential.",
+                prompt: "Before you turn the page, notice one area in your life that feels fractured. Hold it in your mind. Don't fix it yet. Just acknowledge it."
+            },
+            {
+                number: 2,
+                title: "The Fracture – The Input",
+                visual: "Close-up of cracked rocks with veins of light glowing through; dark energy threads weaving around fragments.",
+                content: "In every crack, the possibility of shape-shifting resides. We do not deny the violence of the strike; we deny it the authority to define our direction. The force thrown at us does not dictate our response—we do. This is the moment where low dexterity (reactionary energy) gets captured before it becomes a mirror.",
+                prompt: "<strong>Interactive Ritual:</strong> Arrange three small objects on a page: one representing the challenge, one representing your reaction, and one representing your resilience. Notice how they sit in relation to each other. You're not solving yet—you're witnessing."
+            },
+            {
+                number: 3,
+                title: "The Cohesion – The Transduction",
+                visual: "Swirling lines merging fragments together; colors softening into hints of gold, light blue, and red.",
+                content: "Notice the patterns forming from what once seemed like chaos. The force thrown against us becomes the material for our foundation. This is high dexterity—the metabolization of assault into structure. You are not stronger because the attack happened. You are more conscious because you chose to witness it.",
+                prompt: "<strong>Interactive Ritual:</strong> Draw a line connecting the objects you placed earlier. What shape emerges from the connection? This shape is your transduction pattern—how chaos becomes order in your hands."
+            },
+            {
+                number: 4,
+                title: "The Crown – The Emergence",
+                visual: "A fully formed crown hovering above a unified, solid rock base with radiating circular energy lines.",
+                content: "Even fractured stones can hold the weight of a crown. When we are silent, the work will cry out. This is not victory through dominance. This is mastery through restraint. The stones you refused to throw back are now the foundation. The weight you carried is now the structure.",
+                prompt: "<strong>Interactive Ritual:</strong> Lift your objects or tokens to symbolize the completion of the structure. Hold them at eye level. Reflect on the transformation from stone to witness, from weight to worthy foundation."
+            },
+            {
+                number: 5,
+                title: "The Shell – Where Light Gets In",
+                visual: "Fractured shell with inner light, boundaries clear and permeable.",
+                content: "After collapse, the Shell makes clarity possible. Not a protective wall—a witness. The Shell doesn't prevent the break; it makes the break visible. Light is not obstacle. Light is information. This doctrine means: you do not need to hide the cracks. You need to illuminate them. The world watching the stones hit you will see something different than you do in the moment. They will see resilience being built in real time.",
+                prompt: "<strong>Reflection Question:</strong> When the Shell is active, what do you stop fighting and start reading instead?"
+            },
+            {
+                number: 6,
+                title: "The Source – What Persists",
+                visual: "Glowing center point with threads of light radiating outward through all layers.",
+                content: "Stone Withering Light is not a story about loss. It's a story about what doesn't shatter. The doctrine persists. The belief that clarity matters persists. The commitment to see weight persists. The Source is not in the stone. It's in the one who holds it, learns from it, lets it fall, and chooses to build with what's left.",
+                prompt: "<strong>Embodied Practice:</strong> Sit with your objects. Notice which one represents you. Has it changed since Page 1? That shift is The Source at work."
+            },
+            {
+                number: 7,
+                title: "Integration – The Ship",
+                visual: "Light settles into stillness; shadows soften. Minimalist, contemplative.",
+                content: "Carry the light through the next fracture. You are no longer a target; you are a builder. This is not the end of the ritual. This is the beginning of the practice. VSM School, the drills, the repetition—each one is you learning to tell the difference between dead weight and load-bearing stone. Every card you touch, every moment you choose to hold instead of throw, is you building the crown.",
+                prompt: "<strong>Closing Ritual:</strong> Journal one insight to bring into your next ritual. Mark this volume as READY in your system log. The wall is waiting. So is the light."
+            }
+        ];
+
+        let currentPageIndex = 0;
+
+        function renderPages() {
+            const container = document.getElementById('pageContainer');
+            pages.forEach((page, index) => {
+                const pageDiv = document.createElement('div');
+                pageDiv.className = `page ${index === 0 ? 'active' : ''}`;
+                pageDiv.innerHTML = `
+                    <div class="page-number">Page ${page.number}</div>
+                    <div class="page-title">${page.title}</div>
+                    <div class="visual-description">[Visual: ${page.visual}]</div>
+                    <div class="page-content">${page.content}</div>
+                    <div class="interactive-prompt"><strong>Ritual Prompt:</strong> ${page.prompt}</div>
+                `;
+                container.appendChild(pageDiv);
+            });
+
+            document.getElementById('totalPages').textContent = pages.length;
+        }
+
+        function showPage(index) {
+            if (index < 0 || index >= pages.length) return;
+
+            const allPages = document.querySelectorAll('.page');
+            allPages.forEach(page => page.classList.remove('active'));
+            allPages[index].classList.add('active');
+
+            currentPageIndex = index;
+            document.getElementById('currentPage').textContent = currentPageIndex + 1;
+            document.getElementById('prevBtn').disabled = currentPageIndex === 0;
+            document.getElementById('nextBtn').disabled = currentPageIndex === pages.length - 1;
+
+            const progress = ((currentPageIndex + 1) / pages.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextPage() {
+            if (currentPageIndex < pages.length - 1) {
+                showPage(currentPageIndex + 1);
+            }
+        }
+
+        function previousPage() {
+            if (currentPageIndex > 0) {
+                showPage(currentPageIndex - 1);
+            }
+        }
+
+        function toggleGuide() {
+            alert('Guide Mode: This volume moves from Fracture (recognition) → Cohesion (metabolization) → Crown (mastery). Use the ritual prompts to embody each stage. Return to any page to deepen your practice.');
+        }
+
+        // Initialize
+        renderPages();
+        showPage(0);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'ArrowLeft') previousPage();
+        });
+    </script>
+</body>
+</html>

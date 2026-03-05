@@ -1,5 +1,9 @@
 packages:
   - .
+
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+
+overrides:
+  clearline7-monorepo: link:../../../../clearline7
